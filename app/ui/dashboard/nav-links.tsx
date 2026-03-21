@@ -1,8 +1,9 @@
 'use client';
+import {BrainCircuit, FoldersIcon} from 'lucide-react';
 import {
   UserGroupIcon,
   HomeIcon,
-  DocumentDuplicateIcon,
+  DocumentDuplicateIcon, CalendarIcon,
 } from '@heroicons/react/24/outline';
 import Link from 'next/link'
 import clsx from 'clsx'
@@ -11,12 +12,13 @@ import { usePathname } from 'next/navigation';
 // Depending on the size of the application, this would be stored in a database.
 const links = [
   { name: 'Home', href: '/dashboard', icon: HomeIcon },
-  {
-    name: 'Invoices',
-    href: '/dashboard/invoices',
-    icon: DocumentDuplicateIcon,
+  { name: 'Decks', href: '/dashboard/decks', icon: FoldersIcon },
+  { name: 'Calendar' ,href: '/dashboard/calendar', icon: CalendarIcon },
+  {name: 'Recall',
+    href: '/dashboard/recall',
+    icon: BrainCircuit,
   },
-  { name: 'Customers', href: '/dashboard/customers', icon: UserGroupIcon },
+
 ];
 
 export default function NavLinks() {
