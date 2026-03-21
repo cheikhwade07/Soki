@@ -4,29 +4,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0cfde415-a614-43ed-bcc8-950fb2bfdb5e" name="Changes" comment="fix: added lucil-react as dependencies">
-      <change afterPath="$PROJECT_DIR$/app/dashboard/(overview)/loading.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/dashboard/(overview)/page.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/lib/action.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/login/page.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/auth.config.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/auth.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/proxy.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="0cfde415-a614-43ed-bcc8-950fb2bfdb5e" name="Changes" comment="feat: added authentification logic">
+      <change afterPath="$PROJECT_DIR$/app/api/signup/route.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/dashboard/decks/[id]/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/seed/route.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/ui/dashboard/calendar.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/ui/dashboard/deck.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/types/next-auth.d.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/dashboard/(overview)/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/dashboard/(overview)/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/dashboard/decks/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/dashboard/decks/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/dashboard/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/dashboard/layout.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/dashboard/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/dashboard/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/layout.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/lib/data.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/lib/data.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/lib/definitions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/lib/definitions.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/lib/placeholder-data.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/lib/placeholder-data.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/lib/utils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/lib/utils.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/seed/route.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ui/dashboard/latest-invoices.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ui/dashboard/sidenav.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/dashboard/sidenav.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ui/login-form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/login-form.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pnpm-lock.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pnpm-lock.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/query/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/query/route.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ui/customers/table.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/customers/table.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ui/dashboard/cards.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/dashboard/card.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth.ts" beforeDir="false" afterPath="$PROJECT_DIR$/auth.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -83,6 +78,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "pnpm",
     "npm.Next.js: server-side.executor": "Run",
+    "settings.editor.selected.configurable": "ml.llm.LLMConfigurable",
     "ts.external.directory.path": "C:\\Users\\seydi\\OneDrive\\Desktop\\Winter 2026\\MindHack\\Soki\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
   }
@@ -92,6 +88,7 @@
       <recent name="C:\Users\seydi\OneDrive\Desktop\Winter 2026\MindHack\Soki" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\seydi\OneDrive\Desktop\Winter 2026\MindHack\Soki\app" />
       <recent name="C:\Users\seydi\OneDrive\Desktop\Winter 2026\MindHack\Soki\app\dashboard\(overview)" />
     </key>
   </component>
@@ -183,7 +180,15 @@
       <option name="project" value="LOCAL" />
       <updated>1774112846897</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="feat: added authentification logic">
+      <option name="closed" value="true" />
+      <created>1774123250347</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1774123250347</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -195,6 +200,7 @@
     <MESSAGE value="update: added decks and fixed ui . Commit might be too" />
     <MESSAGE value="fix: Proper calendar icon added and unusable data removed" />
     <MESSAGE value="fix: added lucil-react as dependencies" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix: added lucil-react as dependencies" />
+    <MESSAGE value="feat: added authentification logic" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: added authentification logic" />
   </component>
 </project>

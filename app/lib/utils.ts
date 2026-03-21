@@ -33,7 +33,7 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
   ];
 };
 
-// Days until a deadline — used for calendar/urgency display
+// Days until a deadline — used for calendar.tsx/urgency display
 export const daysUntil = (dateStr: string): number => {
   const now = new Date();
   const target = new Date(dateStr);

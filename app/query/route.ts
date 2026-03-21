@@ -1,23 +1,23 @@
+
 import postgres from 'postgres';
 
-const sql = postgres(process.env.POSTGRES_URL!, {ssl: 'require'});
-
-async function listInvoices() {
-  const data = await sql`
-    SELECT invoices.amount, customers.name
-    FROM invoices
-           JOIN customers ON invoices.customer_id = customers.id
-    WHERE invoices.amount = 666;
-  `;
-
-  return data;
-}
+const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
 export async function GET() {
+    try {
+        const result = await sql`SELECT NOW() as time`;
+        const users = await sql`SELECT user_id, email FROM users`;
+        const decks = await sql`SELECT deck_id, title FROM decks`;
+        const cards = await sql`SELECT COUNT(*) as count FROM cards`;
 
-  try {
-     	return Response.json(await listInvoices());
-     } catch (error) {
-    	return Response.json({ error }, { status: 500 });
-  }
+        return Response.json({
+            connected: true,
+            server_time: result[0].time,
+            users,
+            decks,
+            total_cards: cards[0].count,
+        });
+    } catch (error) {
+        return Response.json({ connected: false, error }, { status: 500 });
+    }
 }

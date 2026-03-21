@@ -12,6 +12,9 @@ const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 // ─── DECKS ───────────────────────────────────────────────
 
 export async function fetchDecks(userId: string) {
+  if (!userId) {
+    throw new Error("fetchDecks called with no userId");
+  }
   try {
     const data = await sql<DeckWithCounts[]>`
       SELECT 
