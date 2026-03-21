@@ -2,21 +2,24 @@
 import {
   UserGroupIcon,
   HomeIcon,
-  DocumentDuplicateIcon,
+  DocumentDuplicateIcon, CalendarIcon,
 } from '@heroicons/react/24/outline';
 import Link from 'next/link'
 import clsx from 'clsx'
+import { BrainCircuit ,Folders } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.
 const links = [
   { name: 'Home', href: '/dashboard', icon: HomeIcon },
+
   {
-    name: 'Invoices',
-    href: '/dashboard/invoices',
-    icon: DocumentDuplicateIcon,
+    name: 'Decks',
+    href: '/dashboard/decks',
+    icon: Folders,
   },
-  { name: 'Customers', href: '/dashboard/customers', icon: UserGroupIcon },
+  { name: 'Active Recall', href: '/dashboard/active_recall', icon: BrainCircuit },
+  { name: 'Calendar', href: '/dashboard/calendar', icon: CalendarIcon },
 ];
 
 export default function NavLinks() {
