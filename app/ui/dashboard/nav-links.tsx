@@ -2,7 +2,7 @@
 import {
   UserGroupIcon,
   HomeIcon,
-  DocumentDuplicateIcon,
+  DocumentDuplicateIcon, CalendarIcon,
 } from '@heroicons/react/24/outline';
 import Link from 'next/link'
 import clsx from 'clsx'
@@ -19,7 +19,7 @@ const links = [
     icon: Folders,
   },
   { name: 'Active Recall', href: '/dashboard/active_recall', icon: BrainCircuit },
-  { name: 'Calendar', href: '/dashboard/calendar', icon: UserGroupIcon },
+  { name: 'Calendar', href: '/dashboard/calendar', icon: CalendarIcon },
 ];
 
 export default function NavLinks() {
