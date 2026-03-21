@@ -4,14 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0cfde415-a614-43ed-bcc8-950fb2bfdb5e" name="Changes" comment="main">
-      <change afterPath="$PROJECT_DIR$/app/dashboard/active_recall/page.tsx" afterDir="false" />
+    <list default="true" id="0cfde415-a614-43ed-bcc8-950fb2bfdb5e" name="Changes" comment="update: added decks and fixed ui . Commit might be too">
+      <change beforePath="$PROJECT_DIR$/.env.example" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/dashboard/customers/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/dashboard/calendar/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/dashboard/invoices/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/dashboard/decks/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/lib/data.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/lib/data.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/lib/placeholder-data.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/lib/placeholder-data.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ui/dashboard/cards.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/dashboard/cards.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/dashboard/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/dashboard/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/ui/dashboard/nav-links.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/dashboard/nav-links.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -142,7 +138,15 @@
       <option name="project" value="LOCAL" />
       <updated>1774063604491</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="update: added decks and fixed ui . Commit might be too">
+      <option name="closed" value="true" />
+      <created>1774106771456</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1774106771456</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -151,6 +155,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Init" />
     <MESSAGE value="main" />
-    <option name="LAST_COMMIT_MESSAGE" value="main" />
+    <MESSAGE value="update: added decks and fixed ui . Commit might be too" />
+    <option name="LAST_COMMIT_MESSAGE" value="update: added decks and fixed ui . Commit might be too" />
   </component>
 </project>
