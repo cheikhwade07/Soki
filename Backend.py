@@ -1,20 +1,30 @@
 import fitz
 import re
+import os
+import tempfile
+import json
 from collections import defaultdict
 from fsrs import State, Scheduler, Card, Rating, ReviewLog
 from datetime import *
 from google import genai
 import math
+from fastapi import Body, FastAPI, File, Form, HTTPException, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
+
+
+def safe_log(*parts):
+    message = " ".join(str(part) for part in parts)
+    try:
+        print(message)
+    except UnicodeEncodeError:
+        print(message.encode("ascii", errors="replace").decode("ascii"))
 
 
 # PDF PARSER ---------------------------------------------------------------------------------------------------------------------------------------------------
 
-#main means of storing info for now
-card_dict = defaultdict(list)
-
 #creates/updates deck_dict
-def update_card_dict (doc_name):
-    global card_dict
+def update_card_dict(doc_name):
+    card_dict = defaultdict(list)
 
     body_size = determine_body_size_and_colour(doc_name)
     common_colour = int(body_size[1])
@@ -79,6 +89,8 @@ def update_card_dict (doc_name):
         #print("VALUE: ", card_dict[current])
 
                 #print("BLOCK: " + clean_text(block[4]))  # actual text
+
+    return card_dict
 
 
 #Return true if at least one banned character is in text
@@ -189,6 +201,22 @@ class card_frontend:
     def append_review_log(self, log):
         self.review_log.append(log)
 
+    def to_api_dict(self):
+        return {
+            "title": clean_text(self.title_str),
+            "card_type": "flashcard",
+            "front": clean_text(self.question).strip("'\""),
+            "back": clean_text(self.answer).strip("'\""),
+            "review_state": {
+                "card_id": self.fsrs_card.card_id,
+                "stability": self.fsrs_card.stability,
+                "difficulty": self.fsrs_card.difficulty,
+                "due": self.fsrs_card.due.isoformat() if self.fsrs_card.due else None,
+                "state": self.fsrs_card.state.name if hasattr(self.fsrs_card.state, "name") else str(self.fsrs_card.state),
+                "last_review": self.fsrs_card.last_review.isoformat() if self.fsrs_card.last_review else None,
+            },
+        }
+
 #constants
 DESIRED_RETENTION = 0.9
 MAX_RETENTION_INTERVAL = 365
@@ -210,7 +238,7 @@ def create_custom_scheduler(parameters, learning_steps, relearning_steps):
 
 #create scheduler with default values
 def create_scheduler():
-    return Scheduler(DEFAULT_WEIGHTS, DESIRED_RETENTION, DEFAULT_LEARNING, DEFAULT_LEARNING, MAX_RETENTION_INTERVAL, True)
+    return Scheduler()
 
 
 #Assume only 1 step is needed
@@ -228,6 +256,96 @@ def create_scheduler():
 #HELPER FUNCTION
 def create_custom_card(id, state = State.Learning, stability = None, difficulty = None, due = None, last_review = None):
     return Card(id, state, 1, stability, difficulty, due, last_review)
+
+
+def normalize_datetime(value):
+    if value is None:
+        return None
+
+    if isinstance(value, datetime):
+        parsed = value
+    else:
+        parsed = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+
+    return parsed.astimezone(timezone.utc)
+
+
+def normalize_state(value):
+    lowered = str(value or "").lower()
+    if lowered == "new":
+        return State.Learning
+    if lowered == "review":
+        return State.Review
+    if lowered == "relearning":
+        return State.Relearning
+    return State.Learning
+
+
+def normalize_rating(value):
+    lowered = str(value or "").lower()
+    if lowered == "again":
+        return Rating.Again
+    if lowered == "hard":
+        return Rating.Hard
+    if lowered == "easy":
+        return Rating.Easy
+    return Rating.Good
+
+
+def normalize_numeric_review_state(review_state):
+    stability = review_state.get("stability")
+    difficulty = review_state.get("difficulty")
+    state = normalize_state(review_state.get("state"))
+
+    normalized_stability = None
+    if stability is not None:
+        try:
+            parsed_stability = float(stability)
+            if parsed_stability > 0:
+                normalized_stability = parsed_stability
+        except (TypeError, ValueError):
+            normalized_stability = None
+
+    normalized_difficulty = None
+    if difficulty is not None:
+        try:
+            parsed_difficulty = float(difficulty)
+            if parsed_difficulty > 0:
+                normalized_difficulty = parsed_difficulty
+        except (TypeError, ValueError):
+            normalized_difficulty = None
+
+    if state == State.Learning and normalized_stability is None:
+        normalized_difficulty = None if normalized_difficulty == 5 else normalized_difficulty
+
+    return {
+        "state": state,
+        "stability": normalized_stability,
+        "difficulty": normalized_difficulty,
+    }
+
+
+def serialize_review_result(card_id, updated_card, review_log):
+    state_name = updated_card.state.name if hasattr(updated_card.state, "name") else str(updated_card.state)
+    rating_name = review_log.rating.name if hasattr(review_log.rating, "name") else str(review_log.rating)
+    return {
+        "card_id": card_id,
+        "review_state": {
+            "stability": updated_card.stability,
+            "difficulty": updated_card.difficulty,
+            "due": updated_card.due.isoformat() if updated_card.due else None,
+            "state": state_name,
+            "last_review": updated_card.last_review.isoformat() if updated_card.last_review else None,
+        },
+        "review_log": {
+            "rating": rating_name,
+            "review_datetime": review_log.review_datetime.isoformat() if review_log.review_datetime else None,
+            "review_duration": review_log.review_duration,
+        },
+    }
 
 
 #Use after user reviews card. Returns updated card information according to FSRS
@@ -263,75 +381,342 @@ def calculate_stability(stability, rating):
 
 # QUESTION GENERATION ---------------------------------------------------------------------------------------------------------------
 
-#Return: tuple of strings in format of (question, answer)
-#@param api the API key
-#@param content the content to generate a question/answer from
-#HELPER FUNCTION
-def generate_question_and_answer(api, content):
-    client = genai.Client(api_key = api)
+GENERATION_BATCH_SIZE = 6
+MAX_GENERATION_SECTIONS = 18
 
-    temp_content = " ".join(content)
+
+def strip_json_fences(text):
+    cleaned = text.strip()
+    if cleaned.startswith("```"):
+        lines = cleaned.splitlines()
+        if len(lines) >= 3:
+            lines = lines[1:]
+            if lines and lines[-1].strip().startswith("```"):
+                lines = lines[:-1]
+            cleaned = "\n".join(lines).strip()
+    return cleaned
+
+
+def is_low_value_title(title):
+    lowered = clean_text(title).lower()
+    banned_keywords = [
+        "announcement",
+        "overview",
+        "questions",
+        "website",
+        "brightspace",
+        "office",
+        "office hours",
+        "who am i",
+        "who are you",
+        "words of advice",
+        "artificial intelligence (ai) policy",
+        "documenting use of ai",
+    ]
+    return any(keyword in lowered for keyword in banned_keywords)
+
+
+def section_text_length(content):
+    return len(clean_text(" ".join(content)))
+
+
+def select_generation_sections(card_dict):
+    candidates = []
+
+    for title, content in card_dict.items():
+        cleaned_title = clean_text(title)
+        cleaned_content = [clean_text(item) for item in content if clean_text(item)]
+        content_length = section_text_length(cleaned_content)
+
+        if not cleaned_title or not cleaned_content:
+            continue
+
+        if is_low_value_title(cleaned_title):
+            continue
+
+        if content_length < 80:
+            continue
+
+        candidates.append(
+            {
+                "title": cleaned_title,
+                "content": cleaned_content,
+                "content_length": content_length,
+            }
+        )
+
+    candidates.sort(key=lambda section: section["content_length"], reverse=True)
+    return candidates[:MAX_GENERATION_SECTIONS]
+
+
+def build_card_from_generated(id, title, question, answer):
+    card = create_custom_card(id)
+    return card_frontend(title, question, answer, card)
+
+
+def generate_cards_for_batch(api, sections):
+    client = genai.Client(api_key = api)
+    payload_sections = [
+        {
+            "title": section["title"],
+            "content": " ".join(section["content"]),
+        }
+        for section in sections
+    ]
 
     try:
         response = client.models.generate_content(
         model="gemini-2.5-flash",
-        contents = "Generate a question and answer based on the following content. YOUR RESPONSE MUST ONLY BE A SINGLE TUPLE IN THE FORMAT OF 'question', 'answer' WITHOUT ANY OTHER TEXT BEING PRESENT. If the content is unsuitable for the generation of a question, simply return 'Error, Error' Here is the content now: " + temp_content
+        contents = (
+            "You are generating study flashcards from lecture material. "
+            "Ignore administrative, contact, scheduling, and low-value content. "
+            "For each useful section, generate exactly one concise study flashcard. "
+            "Return ONLY valid JSON in this exact format: "
+            "{\"cards\":[{\"title\":\"...\",\"question\":\"...\",\"answer\":\"...\"}]}. "
+            "If no sections are useful, return {\"cards\":[]}. "
+            "Do not use markdown fences. "
+            "Here are the sections now: " + json.dumps(payload_sections)
         )
-    except:
-        return ("Error", "Error")
+        )
+    except Exception as error:
+        message = f"Gemini request failed: {error}"
+        safe_log(message)
+        return {
+            "cards": [],
+            "error": message,
+        }
 
-    #print(response.text)
     try:
-        to_return = response.text.split(",")
-    except:
-        return ("Error", "Error")
-    
-    return (to_return[0], to_return[1])
-
-#create card_frontend from scratch
-#stability and difficulty are placeholder values for now (0 and 10 respectively)
-def generate_card_info(id, title_str, content, api):
-    question_and_answer = generate_question_and_answer(api, content)
-    question = question_and_answer[0]
-    answer = question_and_answer[1]
-
-    if "Error" in question or "Error" in answer:
-        return "Error"
-
-    card = create_custom_card(id)
-
-    return card_frontend(title_str, question, answer, card)
+        raw_text = strip_json_fences(response.text)
+        safe_log("Gemini raw response:", raw_text)
+        parsed = json.loads(raw_text)
+        cards = parsed.get("cards", [])
+        if not isinstance(cards, list):
+            return {
+                "cards": [],
+                "error": "Gemini returned an invalid cards payload.",
+            }
+        return {
+            "cards": cards,
+            "error": None,
+        }
+    except Exception as error:
+        message = f"Gemini response parsing failed: {error}"
+        safe_log(message)
+        return {
+            "cards": [],
+            "error": message,
+        }
 
 #return list of card_frontend objects
 def generate_all_card_infos(dict, api):
     id_counter = 0
     list_builder = []
+    failures = []
 
-    for current_key in dict:
-        to_append = generate_card_info(id_counter, current_key, dict[current_key], api)
-        if type(to_append) != str:
-            list_builder.append(to_append)
+    safe_log("Parsed section count:", len(dict))
+    sections = select_generation_sections(dict)
+    safe_log("Selected section count for generation:", len(sections))
+
+    if len(sections) == 0:
+        return {
+            "cards": [],
+            "failures": [
+                {
+                    "title": "PDF content",
+                    "error": "No high-value sections were found for card generation.",
+                }
+            ],
+            "parsed_section_count": len(dict),
+        }
+
+    for index in range(0, len(sections), GENERATION_BATCH_SIZE):
+        batch = sections[index:index + GENERATION_BATCH_SIZE]
+        batch_result = generate_cards_for_batch(api, batch)
+
+        if batch_result["error"]:
+            for section in batch:
+                failures.append(
+                    {
+                        "title": section["title"],
+                        "error": batch_result["error"],
+                    }
+                )
+            continue
+
+        returned_cards = batch_result["cards"]
+        matched_titles = set()
+
+        for raw_card in returned_cards:
+            title = clean_text(raw_card.get("title", ""))
+            question = clean_text(raw_card.get("question", ""))
+            answer = clean_text(raw_card.get("answer", ""))
+
+            if not title or not question or not answer:
+                continue
+
+            matched_titles.add(title)
+            list_builder.append(build_card_from_generated(id_counter, title, question, answer))
             id_counter += 1
-    
+
+        for section in batch:
+            if section["title"] not in matched_titles:
+                failures.append(
+                    {
+                        "title": section["title"],
+                        "error": "Skipped by the model or judged not useful enough for a flashcard.",
+                    }
+                )
+
+    safe_log("Generated card count:", len(list_builder))
+    safe_log("Failed section count:", len(failures))
+
     list_builder.sort(key = lambda c: c.fsrs_card.due)
-    return list_builder
+    return {
+        "cards": list_builder,
+        "failures": failures,
+        "parsed_section_count": len(dict),
+    }
 
 
 
-# main code ---------------------------------------------------------------------------------------------------------------------------
+app = FastAPI(title="Soki Backend")
 
-update_card_dict("test2.pdf")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-for current in card_dict:
-    print("KEY: ", current)
-    print("VALUE: ", card_dict[current])
 
-##value = generate_all_card_infos(card_dict, "AIzaSyBMg6Rp00Oe38fGxRpjAeHfk5wFr6tZzmE")
+def save_uploaded_pdf(upload: UploadFile):
+    suffix = os.path.splitext(upload.filename or "")[1] or ".pdf"
+    with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as temp_file:
+        temp_file.write(upload.file.read())
+        return temp_file.name
 
-print("SWEET MOSES IT WORKS")
 
-#for x in value:
-    #print(x.fsrs_card.card_id)
-    #print(x.title_str)
-    #print(x.question)
-    #print(x.answer)
+def parse_pdf_sections(file_path):
+    parsed = update_card_dict(file_path)
+    return [
+        {
+            "title": clean_text(title),
+            "content": [clean_text(item) for item in content],
+        }
+        for title, content in parsed.items()
+    ]
+
+
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
+
+
+@app.post("/parse-pdf")
+def parse_pdf(file: UploadFile = File(...)):
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="Missing file name.")
+
+    temp_path = save_uploaded_pdf(file)
+
+    try:
+        return {
+            "sections": parse_pdf_sections(temp_path),
+        }
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=str(error))
+    finally:
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
+
+
+@app.post("/generate-cards")
+def generate_cards(
+    file: UploadFile = File(...),
+    api_key: str = Form(...),
+):
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="Missing file name.")
+
+    temp_path = save_uploaded_pdf(file)
+
+    try:
+        parsed = update_card_dict(temp_path)
+        generation_result = generate_all_card_infos(parsed, api_key)
+        generated_cards = generation_result["cards"]
+        failures = generation_result["failures"]
+
+        if len(parsed) == 0:
+            raise HTTPException(
+                status_code=400,
+                detail={
+                    "error": "No usable sections were found in the PDF.",
+                    "parsed_section_count": 0,
+                },
+            )
+
+        if len(generated_cards) == 0:
+            raise HTTPException(
+                status_code=502,
+                detail={
+                    "error": "The AI could not generate any cards from this PDF.",
+                    "parsed_section_count": generation_result["parsed_section_count"],
+                    "failed_section_count": len(failures),
+                    "failures": failures[:5],
+                },
+            )
+
+        return {
+            "parsed_section_count": generation_result["parsed_section_count"],
+            "failed_section_count": len(failures),
+            "failures": failures[:5],
+            "cards": [card.to_api_dict() for card in generated_cards],
+        }
+    except HTTPException:
+        raise
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=str(error))
+    finally:
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
+
+
+@app.post("/review-card")
+def review_card(payload: dict = Body(...)):
+    try:
+        card_id = str(payload.get("card_id") or "")
+        rating_value = payload.get("rating")
+        review_state = payload.get("review_state") or {}
+        response_ms = payload.get("response_ms")
+        normalized_review_state = normalize_numeric_review_state(review_state)
+
+        if not card_id:
+            raise HTTPException(status_code=400, detail="Missing card_id.")
+
+        if not rating_value:
+            raise HTTPException(status_code=400, detail="Missing rating.")
+
+        scheduler = create_scheduler()
+        fsrs_card = create_custom_card(
+            None,
+            normalized_review_state["state"],
+            normalized_review_state["stability"],
+            normalized_review_state["difficulty"],
+            normalize_datetime(review_state.get("due")),
+            normalize_datetime(review_state.get("last_review")),
+        )
+
+        updated_card, review_log = scheduler.review_card(
+            fsrs_card,
+            normalize_rating(rating_value),
+            datetime.now(timezone.utc),
+            response_ms,
+        )
+
+        return serialize_review_result(card_id, updated_card, review_log)
+    except HTTPException:
+        raise
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=str(error))
