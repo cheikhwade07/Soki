@@ -5,21 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0cfde415-a614-43ed-bcc8-950fb2bfdb5e" name="Changes" comment="feat: add missing pages">
-      <change afterPath="$PROJECT_DIR$/app/api/generate-cards/route.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/api/review-card/route.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Soki.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Soki.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend.py" beforeDir="false" afterPath="$PROJECT_DIR$/Backend.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/dashboard/active_recall/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/dashboard/active_recall/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/dashboard/decks/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/dashboard/decks/[id]/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/dashboard/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/dashboard/layout.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/dashboard/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/dashboard/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/lib/data.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/lib/data.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ui/dashboard/calendar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/dashboard/calendar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ui/dashboard/dropfile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/dashboard/dropfile.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ui/dashboard/review-session.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/dashboard/review-session.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pnpm-lock.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pnpm-lock.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/login/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/login/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/signup/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/signup/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ui/Soki.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/Soki.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ui/dashboard/nav-links.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/dashboard/nav-links.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ui/dashboard/sidenav.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/dashboard/sidenav.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ui/login-form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/login-form.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ui/signup-form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/signup-form.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,32 +60,32 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Cheikh&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;javascript.preferred.runtime.type.id&quot;: &quot;node&quot;,
-    &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
-    &quot;js.debugger.nextJs.config.created.server&quot;: &quot;true&quot;,
-    &quot;kronk.content.tree.expanded.paths&quot;: &quot;&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/seydi/OneDrive/Desktop/Winter 2026/MindHack/Soki&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;pnpm&quot;,
-    &quot;npm.Next.js: server-side.executor&quot;: &quot;Run&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\seydi\\OneDrive\\Desktop\\Winter 2026\\MindHack\\Soki\\node_modules\\typescript\\lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "git-widget-placeholder": "#8 on Martin",
+    "ignore.virus.scanning.warn.message": "true",
+    "javascript.preferred.runtime.type.id": "node",
+    "js.debugger.nextJs.config.created.client": "true",
+    "js.debugger.nextJs.config.created.server": "true",
+    "kronk.content.tree.expanded.paths": "",
+    "last_opened_file_path": "C:/Users/seydi/OneDrive/Desktop/Winter 2026/MindHack/Soki",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "pnpm",
+    "npm.Next.js: server-side.executor": "Run",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+    "ts.external.directory.path": "C:\\Users\\seydi\\OneDrive\\Desktop\\Winter 2026\\MindHack\\Soki\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\seydi\OneDrive\Desktop\Winter 2026\MindHack\Soki" />
@@ -246,5 +243,17 @@
     <MESSAGE value="feat: lots of updates" />
     <MESSAGE value="feat: add missing pages" />
     <option name="LAST_COMMIT_MESSAGE" value="feat: add missing pages" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/app/page.tsx</url>
+          <line>565</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

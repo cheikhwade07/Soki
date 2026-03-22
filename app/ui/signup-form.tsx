@@ -59,24 +59,24 @@ export default function SignupForm() {
       action={handleSubmit}
       className="space-y-3"
     >
-      <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
-        <h1 className={`${lusitana.className} mb-3 text-2xl`}>
+      <div className="flex-1 rounded-[1.5rem] bg-slate-50 px-6 pb-5 pt-8">
+        <h1 className={`${lusitana.className} mb-3 text-3xl text-slate-900`}>
           Create your account.
         </h1>
-        <p className="mb-5 text-sm text-gray-600">
+        <p className="mb-5 text-sm leading-6 text-slate-600">
           Start building decks and turn your notes into active recall practice.
         </p>
         <div className="w-full">
           <div>
             <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+              className="mb-3 mt-5 block text-xs font-medium uppercase tracking-[0.18em] text-slate-700"
               htmlFor="email"
             >
               Email
             </label>
             <div className="relative">
               <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                className="peer block w-full rounded-xl border border-gray-200 bg-white py-3 pl-11 text-sm outline-2 placeholder:text-gray-400"
                 id="email"
                 type="email"
                 name="email"
@@ -88,14 +88,14 @@ export default function SignupForm() {
           </div>
           <div className="mt-4">
             <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+              className="mb-3 mt-5 block text-xs font-medium uppercase tracking-[0.18em] text-slate-700"
               htmlFor="password"
             >
               Password
             </label>
             <div className="relative">
               <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                className="peer block w-full rounded-xl border border-gray-200 bg-white py-3 pl-11 text-sm outline-2 placeholder:text-gray-400"
                 id="password"
                 type="password"
                 name="password"
@@ -133,6 +133,12 @@ export default function SignupForm() {
           Already have an account?{' '}
           <Link href="/login" className="font-medium text-blue-500 hover:text-blue-400">
             Log in
+          </Link>
+        </p>
+        <p className="mt-2 text-sm text-slate-500">
+          Want to explore first?{' '}
+          <Link href="/" className="font-medium text-slate-700 hover:text-slate-900">
+            Back to home
           </Link>
         </p>
       </div>
