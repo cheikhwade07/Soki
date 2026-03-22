@@ -581,7 +581,7 @@ export default function Page() {
                 right moment lifts retention back up and flattens the decline.
               </p>
             </div>
-            <div className="rounded-3xl border border-slate-200/80 bg-white/70 p-4 shadow-[0_18px_40px_rgba(15,23,42,0.12)] backdrop-blur-sm md:p-6">
+            <div className="rounded-3xl border border-blue-100/80 bg-[linear-gradient(180deg,rgba(248,251,255,0.94)_0%,rgba(236,243,252,0.92)_100%)] p-4 shadow-[0_18px_40px_rgba(15,23,42,0.1)] backdrop-blur-sm md:p-6">
               <svg
                 viewBox="0 0 900 420"
                 className="h-auto w-full"
@@ -589,46 +589,69 @@ export default function Page() {
                 aria-label="Forgetting curve graph"
               >
                 <g style={{ fontFamily: notoSerifJp.style.fontFamily }}>
-                <line x1="90" y1="42" x2="90" y2="350" stroke="#a8b7cb" strokeWidth="2" />
-                <line x1="90" y1="350" x2="860" y2="350" stroke="#a8b7cb" strokeWidth="2" />
+                <line x1="90" y1="42" x2="90" y2="350" stroke="#aebed8" strokeWidth="2" />
+                <line x1="90" y1="350" x2="860" y2="350" stroke="#aebed8" strokeWidth="2" />
+
+                {[150, 210, 270].map((y) => (
+                  <line key={y} x1="90" y1={y} x2="860" y2={y} stroke="#dbe5f2" strokeWidth="1.5" />
+                ))}
+                {[220, 360, 500, 640].map((x) => (
+                  <line key={x} x1={x} y1="42" x2={x} y2="350" stroke="#e7edf6" strokeWidth="1.2" />
+                ))}
+
                 <path
-                  d="M110 92 C 200 122, 270 182, 340 252 S 490 330, 840 344"
+                  d="M90 118 C 150 162, 208 196, 280 222 C 348 248, 432 274, 520 295 C 620 318, 734 334, 860 340"
                   fill="none"
-                  stroke="#8b9bb6"
+                  stroke="#5f88d8"
                   strokeWidth="5"
                   strokeLinecap="round"
                 />
                 <path
-                  d="M110 92 C 175 112, 235 150, 280 205"
+                  d="M90 118 C 124 88, 154 72, 182 76 C 210 84, 238 122, 270 174 C 304 226, 352 268, 408 296 C 470 320, 534 334, 598 338"
                   fill="none"
-                  stroke="#4d79c7"
+                  stroke="#e9a166"
                   strokeWidth="5"
                   strokeLinecap="round"
                 />
                 <path
-                  d="M280 205 C 335 155, 380 130, 440 112 C 505 132, 565 165, 620 220"
+                  d="M246 118 C 282 80, 314 62, 346 70 C 380 84, 412 124, 446 176 C 482 232, 536 272, 602 294 C 670 314, 744 326, 860 330"
                   fill="none"
-                  stroke="#4d79c7"
+                  stroke="#e47b95"
                   strokeWidth="5"
                   strokeLinecap="round"
                 />
                 <path
-                  d="M620 220 C 670 175, 720 145, 780 122 C 820 135, 846 155, 850 182"
+                  d="M412 118 C 448 82, 484 66, 520 76 C 556 94, 592 136, 628 188 C 662 236, 708 270, 762 288 C 804 300, 836 304, 860 306"
                   fill="none"
-                  stroke="#4d79c7"
+                  stroke="#8b96ad"
                   strokeWidth="5"
                   strokeLinecap="round"
                 />
-                <line x1="280" y1="350" x2="280" y2="170" stroke="#6b93d6" strokeWidth="2.5" strokeDasharray="8 8" />
-                <line x1="620" y1="350" x2="620" y2="186" stroke="#6b93d6" strokeWidth="2.5" strokeDasharray="8 8" />
-                <circle cx="280" cy="205" r="7" fill="#4d79c7" />
-                <circle cx="620" cy="220" r="7" fill="#4d79c7" />
-                <text x="0" y="58" fill="#334155" fontSize="20">Memory</text>
-                <text x="810" y="390" fill="#334155" fontSize="20">Time</text>
-                <text x="140" y="76" fill="#7b8da9" fontSize="18">No review</text>
-                <text x="488" y="80" fill="#4d79c7" fontSize="18">Spaced repetition</text>
-                <text x="246" y="160" fill="#5f86cb" fontSize="16">Review 1</text>
-                <text x="586" y="176" fill="#5f86cb" fontSize="16">Review 2</text>
+                <path
+                  d="M584 118 C 620 82, 654 66, 690 76 C 726 92, 760 128, 794 172 C 822 208, 846 230, 860 244"
+                  fill="none"
+                  stroke="#9bc962"
+                  strokeWidth="5"
+                  strokeLinecap="round"
+                />
+
+                <text x="24" y="60" fill="#334155" fontSize="20">100</text>
+                <text x="34" y="155" fill="#64748b" fontSize="18">70</text>
+                <text x="34" y="215" fill="#64748b" fontSize="18">50</text>
+                <text x="34" y="278" fill="#64748b" fontSize="18">30</text>
+                <text x="34" y="347" fill="#64748b" fontSize="18">0</text>
+
+                <text x="206" y="384" fill="#64748b" fontSize="18">1</text>
+                <text x="346" y="384" fill="#64748b" fontSize="18">2</text>
+                <text x="486" y="384" fill="#64748b" fontSize="18">3</text>
+                <text x="626" y="384" fill="#64748b" fontSize="18">4</text>
+
+                <rect x="676" y="220" width="170" height="132" rx="18" fill="rgba(255,255,255,0.78)" />
+                <text x="700" y="256" fill="#9bc962" fontSize="18">4th repetition</text>
+                <text x="700" y="282" fill="#8b96ad" fontSize="18">3rd repetition</text>
+                <text x="700" y="308" fill="#e47b95" fontSize="18">2nd repetition</text>
+                <text x="700" y="334" fill="#e9a166" fontSize="18">1st repetition</text>
+                <text x="700" y="360" fill="#5f88d8" fontSize="18">Forgetting curve</text>
                 </g>
               </svg>
             </div>
