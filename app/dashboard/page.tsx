@@ -16,7 +16,7 @@ export default async function Page() {
 
     return (
         <main className="space-y-8">
-            <section className="rounded-3xl bg-gradient-to-br from-slate-900 via-blue-700 to-cyan-500 p-8 text-white shadow-lg">
+            <section className="rounded-3xl border border-white/60 bg-[linear-gradient(145deg,rgba(15,23,42,0.98)_0%,rgba(29,78,216,0.9)_55%,rgba(125,211,252,0.76)_100%)] p-8 text-white shadow-[0_30px_70px_rgba(15,23,42,0.15)]">
                 <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                     <div className="max-w-2xl space-y-3">
                         <p className="text-sm font-medium uppercase tracking-[0.2em] text-blue-100">
@@ -48,22 +48,22 @@ export default async function Page() {
             </section>
 
             <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                <div className="rounded-2xl border border-blue-100 bg-blue-50 p-5 shadow-sm">
+                <div className="rounded-2xl border border-blue-100/80 bg-white/80 p-5 shadow-sm backdrop-blur">
                     <p className="text-sm font-medium text-blue-700">Decks</p>
                     <p className="mt-3 text-3xl font-semibold text-slate-900">{stats.totalDecks}</p>
                     <p className="mt-2 text-sm text-gray-600">Organized study spaces ready for cards or nested decks.</p>
                 </div>
-                <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-5 shadow-sm">
+                <div className="rounded-2xl border border-emerald-100/80 bg-white/80 p-5 shadow-sm backdrop-blur">
                     <p className="text-sm font-medium text-emerald-700">Cards</p>
                     <p className="mt-3 text-3xl font-semibold text-slate-900">{stats.totalCards}</p>
                     <p className="mt-2 text-sm text-gray-600">Manual and generated prompts available for recall practice.</p>
                 </div>
-                <div className="rounded-2xl border border-amber-100 bg-amber-50 p-5 shadow-sm">
+                <div className="rounded-2xl border border-amber-100/80 bg-white/80 p-5 shadow-sm backdrop-blur">
                     <p className="text-sm font-medium text-amber-700">Due Now</p>
                     <p className="mt-3 text-3xl font-semibold text-slate-900">{stats.dueNow}</p>
                     <p className="mt-2 text-sm text-gray-600">Cards ready for immediate review in the active recall queue.</p>
                 </div>
-                <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <div className="rounded-2xl border border-slate-200/80 bg-white/85 p-5 shadow-sm backdrop-blur">
                     <p className="text-sm font-medium text-slate-700">Best Next Step</p>
                     <p className="mt-3 text-lg font-semibold text-slate-900">
                         {stats.totalDecks === 0 ? 'Create your first deck' : stats.totalCards === 0 ? 'Add your first cards' : stats.dueNow > 0 ? 'Start a review session' : 'Generate or add more cards'}
@@ -81,17 +81,17 @@ export default async function Page() {
             </section>
 
             <section className="grid gap-4 lg:grid-cols-3">
-                <div className="rounded-2xl border border-rose-100 bg-rose-50 p-6 shadow-sm">
+                <div className="rounded-2xl border border-rose-100/80 bg-white/82 p-6 shadow-sm backdrop-blur">
                     <p className="text-sm font-medium text-rose-700">Upcoming Reviews</p>
                     <p className="mt-3 text-3xl font-semibold text-slate-900">{stats.upcomingDeadlines}</p>
                     <p className="mt-2 text-sm text-gray-600">Cards scheduled ahead, visible in the calendar and the next review wave.</p>
                 </div>
-                <div className="rounded-2xl border border-violet-100 bg-violet-50 p-6 shadow-sm">
+                <div className="rounded-2xl border border-violet-100/80 bg-white/82 p-6 shadow-sm backdrop-blur">
                     <p className="text-sm font-medium text-violet-700">Mastered Cards</p>
                     <p className="mt-3 text-3xl font-semibold text-slate-900">{stats.masteredCards}</p>
                     <p className="mt-2 text-sm text-gray-600">Stable review cards that are holding up well under the scheduler.</p>
                 </div>
-                <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-6 shadow-sm">
+                <div className="rounded-2xl border border-emerald-100/80 bg-white/82 p-6 shadow-sm backdrop-blur">
                     <p className="text-sm font-medium text-emerald-700">Reviewed This Week</p>
                     <p className="mt-3 text-3xl font-semibold text-slate-900">{stats.reviewedThisWeek}</p>
                     <p className="mt-2 text-sm text-gray-600">Recent completed reviews recorded in your learning history.</p>
@@ -101,7 +101,7 @@ export default async function Page() {
             <section className="grid gap-4 lg:grid-cols-3">
                 <Link
                     href="/dashboard/decks"
-                    className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-transform hover:-translate-y-0.5 hover:shadow-md"
+                    className="rounded-2xl border border-gray-200/80 bg-white/85 p-6 shadow-sm backdrop-blur transition-transform hover:-translate-y-0.5 hover:shadow-md"
                 >
                     <p className="text-sm font-medium text-blue-600">Organize</p>
                     <h2 className="mt-2 text-lg font-semibold text-slate-900">Build your deck structure</h2>
@@ -111,7 +111,7 @@ export default async function Page() {
                 </Link>
                 <Link
                     href="/dashboard/calendar"
-                    className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-transform hover:-translate-y-0.5 hover:shadow-md"
+                    className="rounded-2xl border border-gray-200/80 bg-white/85 p-6 shadow-sm backdrop-blur transition-transform hover:-translate-y-0.5 hover:shadow-md"
                 >
                     <p className="text-sm font-medium text-blue-600">Plan</p>
                     <h2 className="mt-2 text-lg font-semibold text-slate-900">See what needs attention</h2>
@@ -121,7 +121,7 @@ export default async function Page() {
                 </Link>
                 <Link
                     href="/dashboard/active_recall"
-                    className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-transform hover:-translate-y-0.5 hover:shadow-md"
+                    className="rounded-2xl border border-gray-200/80 bg-white/85 p-6 shadow-sm backdrop-blur transition-transform hover:-translate-y-0.5 hover:shadow-md"
                 >
                     <p className="text-sm font-medium text-blue-600">Practice</p>
                     <h2 className="mt-2 text-lg font-semibold text-slate-900">Run an active recall session</h2>

@@ -9,7 +9,9 @@ import {
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { lusitana, notoSerifJp } from '@/app/ui/fonts';
-import Image from 'next/image';
+//import Image from 'next/image';
+import {Brain} from 'lucide-react'
+
 
 const studyCards = [
   {
@@ -102,17 +104,10 @@ export default function Page() {
   return (
     <main className="flex min-h-screen flex-col ">
       <div className="relative z-10 flex shrink-0 items-start justify-between border-b border-slate-300/80 bg-white px-2 py-0 shadow-[0_12px_28px_rgba(15,23,42,0.22)] md:px-3 md:py-0">
-        <div className="flex items-center justify-start gap-1 md:gap-2">
-          <Image
-            src="/newest-logo.svg"
-            alt="MindHack logo"
-            width={760}
-            height={760}
-            className="h-32 w-auto object-contain md:h-40"
-            priority
-          />
+        <div className="flex items-center justify-start gap-2 md:gap-3">
+          <Brain className="h-7 w-7 text-blue-900 md:h-9 md:w-9" />
           <span
-            className={`${notoSerifJp.className} -ml-6 text-xl font-bold tracking-[0.01em] text-blue-900 md:-ml-7 md:text-3xl`}
+            className={`${notoSerifJp.className} text-xl font-bold tracking-[0.01em] text-blue-900 md:text-3xl`}
           >
             SOKI
           </span>
@@ -126,13 +121,13 @@ export default function Page() {
           <div className="absolute right-0 top-full z-10 mt-2 w-80 rounded-lg border border-slate-200 bg-white p-3 text-xs text-slate-700 shadow-lg">
             <div className="space-y-2">
               <Link
-                href="/about"
+                href="/#about"
                 className="block rounded-md px-3 py-2 transition-colors hover:bg-slate-50"
               >
                 <p className="font-medium text-slate-900">About us</p>
               </Link>
               <Link
-                href="/get-started"
+                href="/signup"
                 className="block rounded-md px-3 py-2 transition-colors hover:bg-slate-50"
               >
                 <p className="font-medium text-slate-900">Get started</p>
@@ -347,13 +342,13 @@ export default function Page() {
                 </p>
                 <div className="mt-8 flex flex-wrap gap-4">
                   <Link
-                    href="/dashboard"
+                    href="/signup"
                     className="inline-flex items-center gap-3 rounded-xl bg-blue-600 px-6 py-3 text-sm font-medium text-white shadow-[0_18px_40px_rgba(37,99,235,0.26)] transition-colors hover:bg-blue-500"
                   >
                     <span>Start Training</span> <ArrowRightIcon className="w-4" />
                   </Link>
                   <Link
-                    href="/get-started"
+                    href="/#how-it-works"
                     className="inline-flex items-center rounded-xl border border-blue-200/80 bg-white/75 px-6 py-3 text-sm font-medium text-blue-800 shadow-[0_14px_34px_rgba(15,23,42,0.08)] transition-colors hover:border-blue-300 hover:bg-white"
                   >
                     How it works
@@ -430,7 +425,7 @@ export default function Page() {
             </div>
           </div>
         </section>
-        <section className="relative px-4 pb-28 pt-20 md:px-8 md:pb-36 md:pt-28">
+        <section id="how-it-works" className="relative px-4 pb-28 pt-20 md:px-8 md:pb-36 md:pt-28">
           <div className="mx-auto max-w-6xl">
             <div className="text-center">
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-blue-600">
@@ -462,7 +457,7 @@ export default function Page() {
             </div>
           </div>
         </section>
-        <section className="relative px-4 pb-28 md:px-8 md:pb-36">
+        <section id="about" className="relative px-4 pb-28 md:px-8 md:pb-36">
           <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
             <div className="rounded-[2.25rem] border border-blue-200/80 bg-[linear-gradient(180deg,rgba(248,251,255,0.96)_0%,rgba(231,239,250,0.94)_100%)] p-6 shadow-[0_26px_60px_rgba(37,99,235,0.14)]">
               <div className="grid gap-5 md:grid-cols-[1.1fr_0.9fr]">
@@ -719,14 +714,8 @@ export default function Page() {
         </section>
         <footer className="relative mt-auto border-t border-slate-300/80 bg-white/75 px-4 py-6 shadow-[0_-12px_28px_rgba(15,23,42,0.18)] backdrop-blur-sm md:px-8">
           <div className="mx-auto flex max-w-xl flex-col items-center text-center">
-            <div className="-ml-4 flex items-center justify-center gap-0.5 md:-ml-5 md:gap-1">
-            <Image
-              src="/newest-logo.svg"
-              alt="MindHack logo"
-              width={760}
-              height={760}
-              className="h-16 w-auto object-contain md:h-20"
-            />
+            <div className="flex items-center justify-center gap-2 md:gap-3">
+            <Brain className="h-7 w-7 text-blue-900 md:h-9 md:w-9" />
             <span
               className={`${notoSerifJp.className} text-xl font-bold tracking-[0.01em] text-blue-900 md:text-3xl`}
             >
