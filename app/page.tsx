@@ -2,9 +2,7 @@ import Soki from '@/app/ui/Soki';
 import {ArrowRightIcon} from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import {LogIn }from 'lucide-react'
-import styles from '@/app/ui/home.module.css';
 import {lusitana} from "@/app/ui/fonts";
-import Image from 'next/image';
 
 export default function Page() {
     return (
@@ -26,10 +24,10 @@ export default function Page() {
                     <br/>
                     <br/>
                     <Link
-                        href="/dashboard"
+                        href="/signup"
                         className="flex items-center gap-10 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
                     >
-                        <span>Start Now</span> <ArrowRightIcon className="w-5 md:w-6"/>
+                        <span>Get Started</span> <ArrowRightIcon className="w-5 md:w-6"/>
                     </Link>
                     <br/>
                     <Link

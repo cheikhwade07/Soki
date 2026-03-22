@@ -3,21 +3,20 @@ import {
   Card,
   Deck,
   DeckWithCounts,
-  Deadline,
-  DeadlineWithCard,
+  DueReview,
+  ReviewQueueCard,
 } from './definitions';
 
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
-
-// ─── DECKS ───────────────────────────────────────────────
+const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require', prepare: false });
 
 export async function fetchDecks(userId: string) {
   if (!userId) {
-    throw new Error("fetchDecks called with no userId");
+    throw new Error('fetchDecks called with no userId');
   }
+
   try {
     const data = await sql<DeckWithCounts[]>`
-      SELECT 
+      SELECT
         d.*,
         (SELECT COUNT(*) FROM cards c WHERE c.deck_id = d.deck_id)::int AS card_count,
         (SELECT COUNT(*) FROM decks sub WHERE sub.parent_deck_id = d.deck_id)::int AS subdeck_count
@@ -50,7 +49,7 @@ export async function fetchDeckById(deckId: string, userId: string) {
 export async function fetchSubDecks(parentDeckId: string, userId: string) {
   try {
     const data = await sql<DeckWithCounts[]>`
-      SELECT 
+      SELECT
         d.*,
         (SELECT COUNT(*) FROM cards c WHERE c.deck_id = d.deck_id)::int AS card_count,
         (SELECT COUNT(*) FROM decks sub WHERE sub.parent_deck_id = d.deck_id)::int AS subdeck_count
@@ -65,8 +64,6 @@ export async function fetchSubDecks(parentDeckId: string, userId: string) {
     throw new Error('Failed to fetch subdecks.');
   }
 }
-
-// ─── CARDS ───────────────────────────────────────────────
 
 export async function fetchCardsByDeck(deckId: string, userId: string) {
   try {
@@ -98,45 +95,63 @@ export async function fetchCardById(cardId: string) {
   }
 }
 
-// ─── DEADLINES ───────────────────────────────────────────
-
-export async function fetchDeadlines(userId: string) {
+export async function fetchDueReviews(userId: string) {
   try {
-    const data = await sql<DeadlineWithCard[]>`
-      SELECT dl.*, c.front AS card_front
-      FROM deadlines dl
-             JOIN cards c ON dl.card_id = c.card_id
-      WHERE dl.user_id = ${userId}
-      ORDER BY dl.due_date ASC
+    const data = await sql<DueReview[]>`
+      SELECT rs.*, c.front AS card_front
+      FROM review_state rs
+      JOIN cards c ON rs.card_id = c.card_id
+      WHERE rs.user_id = ${userId}
+      ORDER BY rs.due_at ASC
     `;
     return data;
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch deadlines.');
+    throw new Error('Failed to fetch due reviews.');
   }
 }
 
-export async function fetchUpcomingDeadlines(userId: string) {
+export async function fetchUpcomingReviews(userId: string) {
   try {
-    const data = await sql<DeadlineWithCard[]>`
-      SELECT 
-        dl.*,
+    const data = await sql<DueReview[]>`
+      SELECT
+        rs.*,
         c.front AS card_front
-      FROM deadlines dl
-      LEFT JOIN cards c ON dl.card_id = c.card_id
-      WHERE dl.user_id = ${userId}
-        AND dl.due_date >= NOW()
-      ORDER BY dl.due_date ASC
+      FROM review_state rs
+      JOIN cards c ON rs.card_id = c.card_id
+      WHERE rs.user_id = ${userId}
+        AND rs.due_at >= NOW()
+      ORDER BY rs.due_at ASC
       LIMIT 10
     `;
     return data;
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch upcoming deadlines.');
+    throw new Error('Failed to fetch upcoming reviews.');
   }
 }
 
-// ─── DASHBOARD STATS ─────────────────────────────────────
+export async function fetchReviewQueue(userId: string) {
+  try {
+    const data = await sql<ReviewQueueCard[]>`
+      SELECT
+        rs.*,
+        c.card_type,
+        c.front,
+        c.back
+      FROM review_state rs
+      JOIN cards c ON rs.card_id = c.card_id
+      JOIN decks d ON c.deck_id = d.deck_id
+      WHERE rs.user_id = ${userId}
+        AND d.user_id = ${userId}
+      ORDER BY rs.due_at ASC
+    `;
+    return data;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch review queue.');
+  }
+}
 
 export async function fetchDashboardData(userId: string) {
   try {
@@ -148,15 +163,15 @@ export async function fetchDashboardData(userId: string) {
       JOIN decks d ON c.deck_id = d.deck_id
       WHERE d.user_id = ${userId}
     `;
-    const deadlineCountPromise = sql`
-      SELECT COUNT(*) FROM deadlines
-      WHERE user_id = ${userId} AND due_date >= NOW()
+    const reviewCountPromise = sql`
+      SELECT COUNT(*) FROM review_state
+      WHERE user_id = ${userId} AND due_at >= NOW()
     `;
 
     const data = await Promise.all([
       deckCountPromise,
       cardCountPromise,
-      deadlineCountPromise,
+      reviewCountPromise,
     ]);
 
     return {

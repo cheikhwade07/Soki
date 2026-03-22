@@ -4,7 +4,7 @@ import postgres from 'postgres';
 import { z } from 'zod';
 
 
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
+const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require', prepare: false });
 
 export async function POST(request: Request) {
     try {

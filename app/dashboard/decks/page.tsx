@@ -1,38 +1,46 @@
-
-// app/dashboard/decks/page.tsx — show all top-level decks
 import { auth } from '@/auth';
 import { fetchDecks } from '@/app/lib/data';
 import { redirect } from 'next/navigation';
-import { DeckList } from'@/app/ui/dashboard/deck';
-import {FolderPlus, LogIn} from 'lucide-react'
-import Link from "next/link";
+import { DeckList } from '@/app/ui/dashboard/deck';
+import { FolderPlus } from 'lucide-react';
+import Link from 'next/link';
 
 export default async function Page() {
     const session = await auth();
-    console.log("SESSION:", JSON.stringify(session));
     const userId = session?.user?.id;
-    console.log("USER ID:", userId);
 
     if (!userId) {
-        console.log("No userId, redirecting");
         redirect('/login');
     }
 
     const decks = await fetchDecks(userId);
 
     return (
-        <div>
-            <div className="flex items-center justify-between mb-4  ">
-                <h1 className="text-xl font-bold mb-4 text-blue-500">My Decks</h1>
+        <section className="space-y-6">
+            <div className="flex flex-col gap-4 rounded-3xl border border-gray-200 bg-white p-6 shadow-sm md:flex-row md:items-end md:justify-between">
+                <div className="space-y-2">
+                    <p className="text-sm font-medium uppercase tracking-[0.18em] text-blue-500">Deck Library</p>
+                    <h1 className="text-2xl font-bold text-slate-900">Your study structure</h1>
+                    <p className="max-w-2xl text-sm text-gray-600">
+                        Create decks, branch into nested decks, and keep card decks separate from container decks.
+                    </p>
+                </div>
                 <Link
                     href="/dashboard/decks/new"
-                    className="rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
+                    className="inline-flex items-center gap-2 rounded-xl bg-blue-500 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400"
                 >
-                    <FolderPlus/>
+                    <FolderPlus className="h-4 w-4" />
+                    Create Deck
                 </Link>
             </div>
 
+            <div className="flex items-center justify-between">
+                <p className="text-sm text-gray-500">
+                    {decks.length} top-level deck{decks.length !== 1 ? 's' : ''}
+                </p>
+            </div>
+
             <DeckList decks={decks} />
-        </div>
+        </section>
     );
 }
