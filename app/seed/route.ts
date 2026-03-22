@@ -3,7 +3,8 @@ import postgres from 'postgres';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require', prepare: false });
 
-const demoUserId = '410544b2-4001-4271-9855-fec4b6a6442a';
+const newUserId = '410544b2-4001-4271-9855-fec4b6a6442a';
+const powerUserId = '510544b2-5001-4271-9855-fec4b6a6555b';
 
 export async function GET() {
     if (process.env.NODE_ENV !== 'development') {
@@ -87,72 +88,81 @@ export async function GET() {
 
             await transaction`
               INSERT INTO users (user_id, email, password_hash) VALUES
-              (${demoUserId}, 'test@soki.com', ${hash})`;
+              (${newUserId}, 'new@soki.com', ${hash}),
+              (${powerUserId}, 'power@soki.com', ${hash})`;
 
             await transaction`
               INSERT INTO decks (deck_id, user_id, parent_deck_id, deck_kind, title, description) VALUES
-              ('d0000001-0000-4000-8000-000000000001', ${demoUserId}, NULL, NULL, 'Hackathon Demo', 'Fresh empty deck that lets you choose what to add.'),
-              ('d0000002-0000-4000-8000-000000000002', ${demoUserId}, NULL, 'container', 'Biology 101', 'Container deck with subdecks only.'),
-              ('d0000003-0000-4000-8000-000000000003', ${demoUserId}, NULL, 'container', 'Computer Science', 'Container deck with subdecks only.'),
-              ('d0000004-0000-4000-8000-000000000004', ${demoUserId}, NULL, 'cards', 'Rapid Recall', 'Top-level card deck for direct study.')`;
-
-            await transaction`
-              INSERT INTO decks (deck_id, user_id, parent_deck_id, deck_kind, title, description) VALUES
-              ('d0000011-0000-4000-8000-000000000011', ${demoUserId}, 'd0000002-0000-4000-8000-000000000002', 'cards', 'Cell Biology', 'Organelles and membrane transport'),
-              ('d0000012-0000-4000-8000-000000000012', ${demoUserId}, 'd0000002-0000-4000-8000-000000000002', 'cards', 'Genetics', 'DNA, inheritance, and transcription'),
-              ('d0000021-0000-4000-8000-000000000021', ${demoUserId}, 'd0000003-0000-4000-8000-000000000003', 'cards', 'Data Structures', 'Core structures and operations'),
-              ('d0000022-0000-4000-8000-000000000022', ${demoUserId}, 'd0000003-0000-4000-8000-000000000003', 'cards', 'Algorithms', 'Sorting, search, and complexity'),
-              ('d0000023-0000-4000-8000-000000000023', ${demoUserId}, 'd0000003-0000-4000-8000-000000000003', NULL, 'Systems Project', 'Empty subdeck ready to become a container or card deck.')`;
+              ('d1000001-0000-4000-8000-000000000001', ${newUserId}, NULL, NULL, 'Starter Inbox', 'Fresh deck ready to become a card deck or a container deck.'),
+              ('d1000002-0000-4000-8000-000000000002', ${newUserId}, NULL, 'cards', 'First Week Review', 'New-user deck that showcases every supported card type.'),
+              ('d1000003-0000-4000-8000-000000000003', ${newUserId}, NULL, 'container', 'Course Library', 'A new user container deck with organized study areas.'),
+              ('d1000011-0000-4000-8000-000000000011', ${newUserId}, 'd1000003-0000-4000-8000-000000000003', 'cards', 'Biology Basics', 'Simple factual recall for a new learner.'),
+              ('d1000012-0000-4000-8000-000000000012', ${newUserId}, 'd1000003-0000-4000-8000-000000000003', NULL, 'Programming Practice', 'Empty nested deck that still needs content.')`;
 
             await transaction`
               INSERT INTO cards (card_id, deck_id, card_type, front, back) VALUES
-              ('c0000011-0000-4000-8000-000000000011', 'd0000011-0000-4000-8000-000000000011', 'flashcard', 'What is the powerhouse of the cell?', 'The mitochondrion produces ATP through cellular respiration.'),
-              ('c0000012-0000-4000-8000-000000000012', 'd0000011-0000-4000-8000-000000000011', 'flashcard', 'What does the Golgi apparatus do?', 'It modifies, sorts, and packages proteins and lipids.'),
-              ('c0000013-0000-4000-8000-000000000013', 'd0000012-0000-4000-8000-000000000012', 'flashcard', 'What are the four DNA bases?', 'Adenine, thymine, guanine, and cytosine.'),
-              ('c0000014-0000-4000-8000-000000000014', 'd0000012-0000-4000-8000-000000000012', 'mcq', 'Which molecule carries genetic instructions? A) ATP B) DNA C) Lipid D) Ribosome', 'B) DNA'),
-              ('c0000021-0000-4000-8000-000000000021', 'd0000021-0000-4000-8000-000000000021', 'flashcard', 'What data structure uses FIFO ordering?', 'A queue uses first-in, first-out ordering.'),
-              ('c0000022-0000-4000-8000-000000000022', 'd0000021-0000-4000-8000-000000000021', 'flashcard', 'What data structure uses LIFO ordering?', 'A stack uses last-in, first-out ordering.'),
-              ('c0000023-0000-4000-8000-000000000023', 'd0000022-0000-4000-8000-000000000022', 'flashcard', 'What is the average time complexity of binary search?', 'O(log n) when the array is sorted.'),
-              ('c0000024-0000-4000-8000-000000000024', 'd0000022-0000-4000-8000-000000000022', 'mcq', 'Which sort is typically O(n log n)? A) Bubble B) Merge C) Selection D) Insertion', 'B) Merge'),
-              ('c0000031-0000-4000-8000-000000000031', 'd0000004-0000-4000-8000-000000000004', 'flashcard', 'What is retrieval practice?', 'Actively recalling information from memory to strengthen retention.'),
-              ('c0000032-0000-4000-8000-000000000032', 'd0000004-0000-4000-8000-000000000004', 'flashcard', 'What is spacing effect?', 'Learning improves when study sessions are distributed over time.'),
-              ('c0000033-0000-4000-8000-000000000033', 'd0000004-0000-4000-8000-000000000004', 'mcq', 'Which rating should delay review the most? A) Again B) Hard C) Good D) Easy', 'D) Easy'),
-              ('c0000034-0000-4000-8000-000000000034', 'd0000004-0000-4000-8000-000000000004', 'methodology', 'Explain how spaced repetition differs from cramming. Include one practical example.', 'Methodology: define both approaches, contrast how review is distributed over time, then support the distinction with one concrete study example. Reference response: spaced repetition revisits material over increasing intervals, which improves long-term retention. Cramming compresses review into one short period and fades quickly. Example: reviewing biology terms over five days instead of rereading them once the night before.')`;
+              ('c1000001-0000-4000-8000-000000000001', 'd1000002-0000-4000-8000-000000000002', 'flashcard', 'What is active recall?', 'Actively retrieving information from memory instead of passively rereading it.'),
+              ('c1000002-0000-4000-8000-000000000002', 'd1000002-0000-4000-8000-000000000002', 'mcq', 'Which review rating pushes a card furthest out? A) Again B) Hard C) Good D) Easy', 'D) Easy'),
+              ('c1000003-0000-4000-8000-000000000003', 'd1000002-0000-4000-8000-000000000002', 'methodology', 'Explain how you would compare mitosis and meiosis in a short-answer response.', 'Methodology: define both processes, compare purpose, number of divisions, and final cells produced, then close with one clear contrast. Reference response: mitosis creates two identical diploid cells for growth and repair, while meiosis creates four genetically different haploid cells for reproduction.'),
+              ('c1000004-0000-4000-8000-000000000004', 'd1000011-0000-4000-8000-000000000011', 'flashcard', 'What is osmosis?', 'The movement of water across a selectively permeable membrane from low solute concentration to high solute concentration.')`;
 
             await transaction`
               INSERT INTO review_state (
                 card_id, user_id, due_at, last_reviewed_at, stability, difficulty,
                 elapsed_days, scheduled_days, reps, lapses, state
               ) VALUES
-              ('c0000011-0000-4000-8000-000000000011', ${demoUserId}, '2026-03-20 09:00:00', '2026-03-15 09:10:00', 3.9, 4.4, 5, 5, 4, 0, 'review'),
-              ('c0000012-0000-4000-8000-000000000012', ${demoUserId}, '2026-03-22 08:30:00', '2026-03-20 08:35:00', 1.8, 5.2, 2, 2, 2, 0, 'review'),
-              ('c0000013-0000-4000-8000-000000000013', ${demoUserId}, '2026-03-24 12:00:00', '2026-03-22 12:10:00', 1.0, 6.1, 2, 2, 1, 1, 'relearning'),
-              ('c0000014-0000-4000-8000-000000000014', ${demoUserId}, '2026-03-29 10:00:00', '2026-03-21 10:00:00', 4.8, 4.9, 8, 8, 5, 0, 'review'),
-              ('c0000021-0000-4000-8000-000000000021', ${demoUserId}, '2026-03-21 16:00:00', '2026-03-18 16:00:00', 2.7, 5.1, 3, 3, 3, 0, 'review'),
-              ('c0000022-0000-4000-8000-000000000022', ${demoUserId}, '2026-03-25 09:30:00', '2026-03-22 09:35:00', 1.4, 5.8, 3, 3, 2, 1, 'review'),
-              ('c0000023-0000-4000-8000-000000000023', ${demoUserId}, '2026-04-03 11:00:00', '2026-03-22 11:20:00', 6.1, 4.0, 12, 12, 7, 0, 'review'),
-              ('c0000024-0000-4000-8000-000000000024', ${demoUserId}, '2026-03-27 13:00:00', '2026-03-21 13:00:00', 2.0, 5.4, 6, 6, 3, 0, 'review'),
-              ('c0000031-0000-4000-8000-000000000031', ${demoUserId}, '2026-03-22 18:00:00', '2026-03-20 18:05:00', 1.7, 4.6, 2, 2, 2, 0, 'review'),
-              ('c0000032-0000-4000-8000-000000000032', ${demoUserId}, '2026-03-31 08:00:00', '2026-03-22 08:00:00', 3.8, 4.3, 9, 9, 5, 0, 'review'),
-              ('c0000033-0000-4000-8000-000000000033', ${demoUserId}, '2026-03-22 15:00:00', '2026-03-22 15:00:00', 0.9, 5.7, 1, 1, 1, 0, 'learning'),
-              ('c0000034-0000-4000-8000-000000000034', ${demoUserId}, '2026-03-23 19:00:00', '2026-03-22 19:10:00', 1.3, 5.0, 1, 1, 1, 0, 'learning')`;
+              ('c1000001-0000-4000-8000-000000000001', ${newUserId}, NOW() - INTERVAL '3 hours', NULL, 0, 5, 0, 0, 0, 0, 'new'),
+              ('c1000002-0000-4000-8000-000000000002', ${newUserId}, NOW() - INTERVAL '90 minutes', NULL, 0, 5, 0, 0, 0, 0, 'new'),
+              ('c1000003-0000-4000-8000-000000000003', ${newUserId}, NOW() + INTERVAL '1 day', NULL, 0, 5, 0, 0, 0, 0, 'new'),
+              ('c1000004-0000-4000-8000-000000000004', ${newUserId}, NOW() + INTERVAL '2 days', NULL, 0, 5, 0, 0, 0, 0, 'new')`;
+
+            await transaction`
+              INSERT INTO decks (deck_id, user_id, parent_deck_id, deck_kind, title, description) VALUES
+              ('d2000001-0000-4000-8000-000000000001', ${powerUserId}, NULL, 'container', 'Med School System', 'A mature account with a stable long-term study structure.'),
+              ('d2000002-0000-4000-8000-000000000002', ${powerUserId}, NULL, 'cards', 'Daily Mixed Review', 'A high-traffic deck used almost every day.'),
+              ('d2000011-0000-4000-8000-000000000011', ${powerUserId}, 'd2000001-0000-4000-8000-000000000001', 'cards', 'Cardiology', 'Power user factual and conceptual review deck.'),
+              ('d2000012-0000-4000-8000-000000000012', ${powerUserId}, 'd2000001-0000-4000-8000-000000000001', 'cards', 'Pharmacology', 'Frequent mixed-card review deck.'),
+              ('d2000013-0000-4000-8000-000000000013', ${powerUserId}, 'd2000001-0000-4000-8000-000000000001', 'cards', 'Case Method', 'Methodology-heavy deck for structured reasoning practice.')`;
+
+            await transaction`
+              INSERT INTO cards (card_id, deck_id, card_type, front, back) VALUES
+              ('c2000001-0000-4000-8000-000000000001', 'd2000011-0000-4000-8000-000000000011', 'flashcard', 'What heart sound is produced by closure of the mitral and tricuspid valves?', 'S1.'),
+              ('c2000002-0000-4000-8000-000000000002', 'd2000011-0000-4000-8000-000000000011', 'mcq', 'Which vessel carries oxygenated blood from the lungs to the heart? A) Pulmonary artery B) Pulmonary vein C) Superior vena cava D) Aorta', 'B) Pulmonary vein'),
+              ('c2000003-0000-4000-8000-000000000003', 'd2000012-0000-4000-8000-000000000012', 'flashcard', 'What class of drug is lisinopril?', 'An ACE inhibitor.'),
+              ('c2000004-0000-4000-8000-000000000004', 'd2000012-0000-4000-8000-000000000012', 'mcq', 'Which drug class is most associated with reducing gastric acid secretion? A) Beta blockers B) Proton pump inhibitors C) SSRIs D) NSAIDs', 'B) Proton pump inhibitors'),
+              ('c2000005-0000-4000-8000-000000000005', 'd2000013-0000-4000-8000-000000000013', 'methodology', 'Outline how you would answer a clinical case asking for the most likely diagnosis and first management step.', 'Methodology: summarize the presentation, identify the most discriminating clues, rule out close alternatives, state the likely diagnosis, then give the immediate management priority. Reference response: begin with the key symptoms and vitals, compare them to the highest-risk causes, justify the best-fit diagnosis, and finish with the first safe intervention.'),
+              ('c2000006-0000-4000-8000-000000000006', 'd2000002-0000-4000-8000-000000000002', 'flashcard', 'Why does spaced repetition improve retention?', 'It revisits information at increasing intervals near the point of forgetting.'),
+              ('c2000007-0000-4000-8000-000000000007', 'd2000002-0000-4000-8000-000000000002', 'methodology', 'Describe how you would explain the difference between sensitivity and specificity in an exam answer.', 'Methodology: define each metric, tie each one to false negatives or false positives, and finish with a short example of when each matters. Reference response: sensitivity measures how well a test catches true positives, while specificity measures how well it excludes true negatives.')`;
+
+            await transaction`
+              INSERT INTO review_state (
+                card_id, user_id, due_at, last_reviewed_at, stability, difficulty,
+                elapsed_days, scheduled_days, reps, lapses, state
+              ) VALUES
+              ('c2000001-0000-4000-8000-000000000001', ${powerUserId}, NOW() - INTERVAL '1 day', NOW() - INTERVAL '5 days', 6.8, 4.0, 5, 12, 10, 0, 'review'),
+              ('c2000002-0000-4000-8000-000000000002', ${powerUserId}, NOW() - INTERVAL '2 hours', NOW() - INTERVAL '4 days', 4.2, 4.8, 4, 7, 8, 1, 'review'),
+              ('c2000003-0000-4000-8000-000000000003', ${powerUserId}, NOW() + INTERVAL '3 days', NOW() - INTERVAL '6 days', 7.5, 3.7, 6, 14, 11, 0, 'review'),
+              ('c2000004-0000-4000-8000-000000000004', ${powerUserId}, NOW() - INTERVAL '30 minutes', NOW() - INTERVAL '2 days', 2.1, 5.5, 2, 2, 3, 1, 'learning'),
+              ('c2000005-0000-4000-8000-000000000005', ${powerUserId}, NOW() - INTERVAL '5 hours', NOW() - INTERVAL '1 day', 1.5, 5.2, 1, 1, 2, 0, 'learning'),
+              ('c2000006-0000-4000-8000-000000000006', ${powerUserId}, NOW() + INTERVAL '8 days', NOW() - INTERVAL '8 days', 9.2, 3.2, 8, 21, 14, 0, 'review'),
+              ('c2000007-0000-4000-8000-000000000007', ${powerUserId}, NOW() - INTERVAL '3 days', NOW() - INTERVAL '9 days', 5.1, 4.6, 9, 9, 9, 2, 'relearning')`;
 
             await transaction`
               INSERT INTO review_events (
                 card_id, user_id, rating, reviewed_at, previous_due_at, next_due_at,
                 previous_stability, next_stability, previous_difficulty, next_difficulty, response_ms
               ) VALUES
-              ('c0000011-0000-4000-8000-000000000011', ${demoUserId}, 'good', '2026-03-15 09:10:00', '2026-03-18 09:00:00', '2026-03-20 09:00:00', 3.1, 3.9, 4.7, 4.4, 7000),
-              ('c0000012-0000-4000-8000-000000000012', ${demoUserId}, 'good', '2026-03-20 08:35:00', '2026-03-21 08:30:00', '2026-03-22 08:30:00', 1.2, 1.8, 5.5, 5.2, 9500),
-              ('c0000013-0000-4000-8000-000000000013', ${demoUserId}, 'again', '2026-03-22 12:10:00', '2026-03-29 12:00:00', '2026-03-24 12:00:00', 1.8, 1.0, 5.8, 6.1, 14000),
-              ('c0000021-0000-4000-8000-000000000021', ${demoUserId}, 'good', '2026-03-18 16:00:00', '2026-03-19 16:00:00', '2026-03-21 16:00:00', 2.0, 2.7, 5.4, 5.1, 10200),
-              ('c0000023-0000-4000-8000-000000000023', ${demoUserId}, 'easy', '2026-03-22 11:20:00', '2026-03-26 11:00:00', '2026-04-03 11:00:00', 5.4, 6.1, 4.3, 4.0, 5200),
-              ('c0000031-0000-4000-8000-000000000031', ${demoUserId}, 'good', '2026-03-20 18:05:00', '2026-03-21 18:00:00', '2026-03-22 18:00:00', 1.2, 1.7, 4.8, 4.6, 8200),
-              ('c0000033-0000-4000-8000-000000000033', ${demoUserId}, 'hard', '2026-03-22 15:00:00', '2026-03-22 09:00:00', '2026-03-22 15:00:00', 0.6, 0.9, 5.5, 5.7, 11000)`;
+              ('c2000001-0000-4000-8000-000000000001', ${powerUserId}, 'good', NOW() - INTERVAL '5 days', NOW() - INTERVAL '7 days', NOW() - INTERVAL '1 day', 5.9, 6.8, 4.2, 4.0, 5400),
+              ('c2000002-0000-4000-8000-000000000002', ${powerUserId}, 'hard', NOW() - INTERVAL '4 days', NOW() - INTERVAL '6 days', NOW() - INTERVAL '2 hours', 5.0, 4.2, 4.5, 4.8, 7100),
+              ('c2000003-0000-4000-8000-000000000003', ${powerUserId}, 'easy', NOW() - INTERVAL '6 days', NOW() - INTERVAL '8 days', NOW() + INTERVAL '3 days', 6.2, 7.5, 4.0, 3.7, 4300),
+              ('c2000004-0000-4000-8000-000000000004', ${powerUserId}, 'again', NOW() - INTERVAL '2 days', NOW() + INTERVAL '1 day', NOW() - INTERVAL '30 minutes', 3.4, 2.1, 5.1, 5.5, 9800),
+              ('c2000005-0000-4000-8000-000000000005', ${powerUserId}, 'good', NOW() - INTERVAL '1 day', NOW() + INTERVAL '1 day', NOW() - INTERVAL '5 hours', 1.0, 1.5, 5.4, 5.2, 12100),
+              ('c2000007-0000-4000-8000-000000000007', ${powerUserId}, 'again', NOW() - INTERVAL '9 days', NOW() - INTERVAL '1 day', NOW() - INTERVAL '3 days', 6.3, 5.1, 4.3, 4.6, 13300)`;
         });
 
         const counts = await sql`
           SELECT
+            (SELECT COUNT(*) FROM users)::int AS user_count,
             (SELECT COUNT(*) FROM decks)::int AS deck_count,
             (SELECT COUNT(*) FROM cards)::int AS card_count,
             (SELECT COUNT(*) FROM review_state)::int AS review_state_count,
@@ -160,16 +170,34 @@ export async function GET() {
         `;
 
         return Response.json({
-            message: 'Database reset and seeded for deck-kind demo.',
-            login: {
-                email: 'test@soki.com',
-                password: '123456',
-            },
+            message: 'Database fully reset and reseeded with two demo users.',
+            logins: [
+                {
+                    profile: 'new-user',
+                    email: 'new@soki.com',
+                    password: '123456',
+                    focus: 'Shows empty deck flow, nested deck flow, and all three card types.',
+                },
+                {
+                    profile: 'power-user',
+                    email: 'power@soki.com',
+                    password: '123456',
+                    focus: 'Shows mature FSRS state, review history, overdue cards, and long-term usage analytics.',
+                },
+            ],
             counts: counts[0],
-            demo_decks: {
-                empty: 'Hackathon Demo',
-                container: ['Biology 101', 'Computer Science'],
-                cards: ['Rapid Recall', 'Cell Biology', 'Algorithms'],
+            showcase: {
+                new_user: {
+                    empty_deck: 'Starter Inbox',
+                    all_card_types: 'First Week Review',
+                    container_deck: 'Course Library',
+                    nested_empty_deck: 'Programming Practice',
+                },
+                power_user: {
+                    container_deck: 'Med School System',
+                    due_review_deck: 'Daily Mixed Review',
+                    mature_review_decks: ['Cardiology', 'Pharmacology', 'Case Method'],
+                },
             },
         });
     } catch (error) {
