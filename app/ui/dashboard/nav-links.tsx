@@ -1,28 +1,24 @@
 'use client';
-import {BrainCircuit, FoldersIcon} from 'lucide-react';
+
 import {
-  UserGroupIcon,
   HomeIcon,
-  DocumentDuplicateIcon, CalendarIcon,
+  CalendarIcon,
 } from '@heroicons/react/24/outline';
-import Link from 'next/link'
-import clsx from 'clsx'
+import Link from 'next/link';
+import clsx from 'clsx';
+import { BrainCircuit, Folders } from 'lucide-react';
 import { usePathname } from 'next/navigation';
-// Map of links to display in the side navigation.
-// Depending on the size of the application, this would be stored in a database.
+
 const links = [
   { name: 'Home', href: '/dashboard', icon: HomeIcon },
-  { name: 'Decks', href: '/dashboard/decks', icon: FoldersIcon },
-  { name: 'Calendar' ,href: '/dashboard/calendar', icon: CalendarIcon },
-  {name: 'Recall',
-    href: '/dashboard/recall',
-    icon: BrainCircuit,
-  },
-
+  { name: 'Decks', href: '/dashboard/decks', icon: Folders },
+  { name: 'Review', href: '/dashboard/active_recall', icon: BrainCircuit },
+  { name: 'Calendar', href: '/dashboard/calendar', icon: CalendarIcon },
 ];
 
 export default function NavLinks() {
   const pathname = usePathname();
+
   return (
     <>
       {links.map((link) => {
@@ -32,18 +28,17 @@ export default function NavLinks() {
             key={link.name}
             href={link.href}
             className={clsx(
-                "flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3",
-                {
-                  'bg-sky-100 text-blue-600': pathname === link.href,
-                },
+              'flex h-[52px] grow items-center justify-center gap-2 rounded-xl border border-transparent bg-white/70 p-3 text-sm font-medium text-slate-700 transition-colors hover:border-sky-200 hover:bg-sky-50 hover:text-blue-600 md:flex-none md:justify-start md:px-4',
+              {
+                'border-sky-200 bg-sky-50 text-blue-600 shadow-sm': pathname === link.href,
+              },
             )}
           >
             <LinkIcon className="w-6" />
             <p className="hidden md:block">{link.name}</p>
           </Link>
         );
-      })
-      }
+      })}
     </>
   );
 }

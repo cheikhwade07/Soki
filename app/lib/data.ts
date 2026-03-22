@@ -1,218 +1,224 @@
 import postgres from 'postgres';
 import {
-  CustomerField,
-  CustomersTableType,
-  InvoiceForm,
-  InvoicesTable,
-  LatestInvoiceRaw,
-  Revenue,
+  Card,
+  Deck,
+  DeckWithCounts,
+  DueReview,
+  ReviewQueueCard,
 } from './definitions';
-import { formatCurrency } from './utils';
 
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
+const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require', prepare: false });
 
-export async function fetchRevenue() {
+export async function fetchDecks(userId: string) {
+  if (!userId) {
+    throw new Error('fetchDecks called with no userId');
+  }
+
   try {
-    // Artificially delay a response for demo purposes.
-    // Don't do this in production :)
-
-    // console.log('Fetching revenue data...');
-    // await new Promise((resolve) => setTimeout(resolve, 3000));
-
-    const data = await sql<Revenue[]>`SELECT * FROM revenue`;
-
-    // console.log('Data fetch completed after 3 seconds.');
-
+    const data = await sql<DeckWithCounts[]>`
+      SELECT
+        d.*,
+        (SELECT COUNT(*) FROM cards c WHERE c.deck_id = d.deck_id)::int AS card_count,
+        (SELECT COUNT(*) FROM decks sub WHERE sub.parent_deck_id = d.deck_id)::int AS subdeck_count
+      FROM decks d
+      WHERE d.user_id = ${userId}
+        AND d.parent_deck_id IS NULL
+      ORDER BY d.created_at DESC
+    `;
     return data;
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch revenue data.');
+    throw new Error('Failed to fetch decks.');
   }
 }
 
-export async function fetchLatestInvoices() {
+export async function fetchDeckById(deckId: string, userId: string) {
   try {
-    const data = await sql<LatestInvoiceRaw[]>`
-      SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
-      FROM invoices
-      JOIN customers ON invoices.customer_id = customers.id
-      ORDER BY invoices.date DESC
-      LIMIT 5`;
-
-    const latestInvoices = data.map((invoice) => ({
-      ...invoice,
-      amount: formatCurrency(invoice.amount),
-    }));
-    return latestInvoices;
+    const data = await sql<Deck[]>`
+      SELECT * FROM decks
+      WHERE deck_id = ${deckId}
+        AND user_id = ${userId}
+    `;
+    return data[0];
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch the latest recall.');
+    throw new Error('Failed to fetch deck.');
   }
 }
 
-export async function fetchCardData() {
+export async function fetchSubDecks(parentDeckId: string, userId: string) {
   try {
-    // You can probably combine these into a single SQL query
-    // However, we are intentionally splitting them to demonstrate
-    // how to initialize multiple queries in parallel with JS.
-    const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
-    const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
-    const invoiceStatusPromise = sql`SELECT
-         SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
-         SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
-         FROM invoices`;
+    const data = await sql<DeckWithCounts[]>`
+      SELECT
+        d.*,
+        (SELECT COUNT(*) FROM cards c WHERE c.deck_id = d.deck_id)::int AS card_count,
+        (SELECT COUNT(*) FROM decks sub WHERE sub.parent_deck_id = d.deck_id)::int AS subdeck_count
+      FROM decks d
+      WHERE d.parent_deck_id = ${parentDeckId}
+        AND d.user_id = ${userId}
+      ORDER BY d.created_at DESC
+    `;
+    return data;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch subdecks.');
+  }
+}
+
+export async function fetchCardsByDeck(deckId: string, userId: string) {
+  try {
+    const data = await sql<Card[]>`
+      SELECT c.*
+      FROM cards c
+      JOIN decks d ON c.deck_id = d.deck_id
+      WHERE c.deck_id = ${deckId}
+        AND d.user_id = ${userId}
+      ORDER BY c.created_at DESC
+    `;
+    return data;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch cards.');
+  }
+}
+
+export async function fetchCardById(cardId: string) {
+  try {
+    const data = await sql<Card[]>`
+      SELECT * FROM cards
+      WHERE card_id = ${cardId}
+    `;
+    return data[0];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch card.');
+  }
+}
+
+export async function fetchDueReviews(userId: string) {
+  try {
+    const data = await sql<DueReview[]>`
+      SELECT rs.*, c.front AS card_front
+      FROM review_state rs
+      JOIN cards c ON rs.card_id = c.card_id
+      WHERE rs.user_id = ${userId}
+      ORDER BY rs.due_at ASC
+    `;
+    return data;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch due reviews.');
+  }
+}
+
+export async function fetchUpcomingReviews(userId: string) {
+  try {
+    const data = await sql<DueReview[]>`
+      SELECT
+        rs.*,
+        c.front AS card_front
+      FROM review_state rs
+      JOIN cards c ON rs.card_id = c.card_id
+      WHERE rs.user_id = ${userId}
+        AND rs.due_at >= NOW()
+      ORDER BY rs.due_at ASC
+      LIMIT 10
+    `;
+    return data;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch upcoming reviews.');
+  }
+}
+
+export async function fetchReviewQueue(userId: string, deckId?: string) {
+  try {
+    const data = deckId
+      ? await sql<ReviewQueueCard[]>`
+          SELECT
+            rs.*,
+            c.card_type,
+            c.front,
+            c.back
+          FROM review_state rs
+          JOIN cards c ON rs.card_id = c.card_id
+          JOIN decks d ON c.deck_id = d.deck_id
+          WHERE rs.user_id = ${userId}
+            AND d.user_id = ${userId}
+            AND c.deck_id = ${deckId}
+            AND rs.due_at <= NOW()
+          ORDER BY rs.due_at ASC
+        `
+      : await sql<ReviewQueueCard[]>`
+          SELECT
+            rs.*,
+            c.card_type,
+            c.front,
+            c.back
+          FROM review_state rs
+          JOIN cards c ON rs.card_id = c.card_id
+          JOIN decks d ON c.deck_id = d.deck_id
+          WHERE rs.user_id = ${userId}
+            AND d.user_id = ${userId}
+            AND rs.due_at <= NOW()
+          ORDER BY rs.due_at ASC
+        `;
+    return data;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch review queue.');
+  }
+}
+
+export async function fetchDashboardData(userId: string) {
+  try {
+    const deckCountPromise = sql`
+      SELECT COUNT(*) FROM decks WHERE user_id = ${userId}
+    `;
+    const cardCountPromise = sql`
+      SELECT COUNT(*) FROM cards c
+      JOIN decks d ON c.deck_id = d.deck_id
+      WHERE d.user_id = ${userId}
+    `;
+    const reviewCountPromise = sql`
+      SELECT COUNT(*) FROM review_state
+      WHERE user_id = ${userId} AND due_at >= NOW()
+    `;
+    const dueNowPromise = sql`
+      SELECT COUNT(*) FROM review_state
+      WHERE user_id = ${userId} AND due_at <= NOW()
+    `;
+    const masteredPromise = sql`
+      SELECT COUNT(*) FROM review_state
+      WHERE user_id = ${userId}
+        AND state = 'review'
+        AND stability >= 5
+    `;
+    const recentReviewsPromise = sql`
+      SELECT COUNT(*) FROM review_events
+      WHERE user_id = ${userId}
+        AND reviewed_at >= NOW() - INTERVAL '7 days'
+    `;
 
     const data = await Promise.all([
-      invoiceCountPromise,
-      customerCountPromise,
-      invoiceStatusPromise,
+      deckCountPromise,
+      cardCountPromise,
+      reviewCountPromise,
+      dueNowPromise,
+      masteredPromise,
+      recentReviewsPromise,
     ]);
 
-    const numberOfInvoices = Number(data[0][0].count ?? '0');
-    const numberOfCustomers = Number(data[1][0].count ?? '0');
-    const totalPaidInvoices = formatCurrency(data[2][0].paid ?? '0');
-    const totalPendingInvoices = formatCurrency(data[2][0].pending ?? '0');
-
     return {
-      numberOfCustomers,
-      numberOfInvoices,
-      totalPaidInvoices,
-      totalPendingInvoices,
+      totalDecks: Number(data[0][0].count ?? '0'),
+      totalCards: Number(data[1][0].count ?? '0'),
+      upcomingDeadlines: Number(data[2][0].count ?? '0'),
+      dueNow: Number(data[3][0].count ?? '0'),
+      masteredCards: Number(data[4][0].count ?? '0'),
+      reviewedThisWeek: Number(data[5][0].count ?? '0'),
     };
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch card data.');
-  }
-}
-
-const ITEMS_PER_PAGE = 6;
-export async function fetchFilteredInvoices(
-  query: string,
-  currentPage: number,
-) {
-  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-
-  try {
-    const invoices = await sql<InvoicesTable[]>`
-      SELECT
-        invoices.id,
-        invoices.amount,
-        invoices.date,
-        invoices.status,
-        customers.name,
-        customers.email,
-        customers.image_url
-      FROM invoices
-      JOIN customers ON invoices.customer_id = customers.id
-      WHERE
-        customers.name ILIKE ${`%${query}%`} OR
-        customers.email ILIKE ${`%${query}%`} OR
-        invoices.amount::text ILIKE ${`%${query}%`} OR
-        invoices.date::text ILIKE ${`%${query}%`} OR
-        invoices.status ILIKE ${`%${query}%`}
-      ORDER BY invoices.date DESC
-      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
-    `;
-
-    return invoices;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch recall.');
-  }
-}
-
-export async function fetchInvoicesPages(query: string) {
-  try {
-    const data = await sql`SELECT COUNT(*)
-    FROM invoices
-    JOIN customers ON invoices.customer_id = customers.id
-    WHERE
-      customers.name ILIKE ${`%${query}%`} OR
-      customers.email ILIKE ${`%${query}%`} OR
-      invoices.amount::text ILIKE ${`%${query}%`} OR
-      invoices.date::text ILIKE ${`%${query}%`} OR
-      invoices.status ILIKE ${`%${query}%`}
-  `;
-
-    const totalPages = Math.ceil(Number(data[0].count) / ITEMS_PER_PAGE);
-    return totalPages;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch total number of recall.');
-  }
-}
-
-export async function fetchInvoiceById(id: string) {
-  try {
-    const data = await sql<InvoiceForm[]>`
-      SELECT
-        invoices.id,
-        invoices.customer_id,
-        invoices.amount,
-        invoices.status
-      FROM invoices
-      WHERE invoices.id = ${id};
-    `;
-
-    const invoice = data.map((invoice) => ({
-      ...invoice,
-      // Convert amount from cents to dollars
-      amount: invoice.amount / 100,
-    }));
-
-    return invoice[0];
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch invoice.');
-  }
-}
-
-export async function fetchCustomers() {
-  try {
-    const customers = await sql<CustomerField[]>`
-      SELECT
-        id,
-        name
-      FROM customers
-      ORDER BY name ASC
-    `;
-
-    return customers;
-  } catch (err) {
-    console.error('Database Error:', err);
-    throw new Error('Failed to fetch all calendar.');
-  }
-}
-
-export async function fetchFilteredCustomers(query: string) {
-  try {
-    const data = await sql<CustomersTableType[]>`
-		SELECT
-		  customers.id,
-		  customers.name,
-		  customers.email,
-		  customers.image_url,
-		  COUNT(invoices.id) AS total_invoices,
-		  SUM(CASE WHEN invoices.status = 'pending' THEN invoices.amount ELSE 0 END) AS total_pending,
-		  SUM(CASE WHEN invoices.status = 'paid' THEN invoices.amount ELSE 0 END) AS total_paid
-		FROM customers
-		LEFT JOIN invoices ON customers.id = invoices.customer_id
-		WHERE
-		  customers.name ILIKE ${`%${query}%`} OR
-        customers.email ILIKE ${`%${query}%`}
-		GROUP BY customers.id, customers.name, customers.email, customers.image_url
-		ORDER BY customers.name ASC
-	  `;
-
-    const customers = data.map((customer) => ({
-      ...customer,
-      total_pending: formatCurrency(customer.total_pending),
-      total_paid: formatCurrency(customer.total_paid),
-    }));
-
-    return customers;
-  } catch (err) {
-    console.error('Database Error:', err);
-    throw new Error('Failed to fetch customer table.');
+    throw new Error('Failed to fetch dashboard data.');
   }
 }
