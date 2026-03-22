@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0cfde415-a614-43ed-bcc8-950fb2bfdb5e" name="Changes" comment="update: added decks and fixed ui . Commit might be too">
-      <change beforePath="$PROJECT_DIR$/.env.example" beforeDir="false" />
+    <list default="true" id="0cfde415-a614-43ed-bcc8-950fb2bfdb5e" name="Changes" comment="feat: add missing pages">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/dashboard/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/dashboard/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ui/dashboard/nav-links.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/dashboard/nav-links.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/page.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,23 +14,29 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="59" />
+    <option name="cachedIndexableFilesCount" value="82" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="main" />
+        <entry key="$PROJECT_DIR$" value="Martin" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="ROOT_SYNC" value="SYNC" />
   </component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/cheikhwade07/Soki.git",
-    "accountId": "6525fb8c-6495-491e-b787-f43cfd3e86fe"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;cheikhwade07&quot;
   }
-}]]></component>
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/cheikhwade07/Soki.git&quot;,
+    &quot;accountId&quot;: &quot;6525fb8c-6495-491e-b787-f43cfd3e86fe&quot;
+  }
+}</component>
   <component name="McpProjectServerCommands">
     <commands />
     <urls />
@@ -58,6 +62,7 @@
     "javascript.preferred.runtime.type.id": "node",
     "js.debugger.nextJs.config.created.client": "true",
     "js.debugger.nextJs.config.created.server": "true",
+    "kronk.content.tree.expanded.paths": "",
     "last_opened_file_path": "C:/Users/seydi/OneDrive/Desktop/Winter 2026/MindHack/Soki",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -65,6 +70,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "pnpm",
     "npm.Next.js: server-side.executor": "Run",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
     "ts.external.directory.path": "C:\\Users\\seydi\\OneDrive\\Desktop\\Winter 2026\\MindHack\\Soki\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
   }
@@ -72,6 +78,10 @@
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\seydi\OneDrive\Desktop\Winter 2026\MindHack\Soki" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\seydi\OneDrive\Desktop\Winter 2026\MindHack\Soki\app" />
+      <recent name="C:\Users\seydi\OneDrive\Desktop\Winter 2026\MindHack\Soki\app\dashboard\(overview)" />
     </key>
   </component>
   <component name="RunManager" selected="npm.Next.js: server-side">
@@ -105,6 +115,8 @@
       <updated>1774059926045</updated>
       <workItem from="1774059927682" duration="171000" />
       <workItem from="1774060127348" duration="1998000" />
+      <workItem from="1774169404536" duration="7495000" />
+      <workItem from="1774177215943" duration="2616000" />
     </task>
     <task id="LOCAL-00001" summary="Init">
       <option name="closed" value="true" />
@@ -146,7 +158,79 @@
       <option name="project" value="LOCAL" />
       <updated>1774106771456</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="fix: Proper calendar icon added and unusable data removed">
+      <option name="closed" value="true" />
+      <created>1774112551758</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1774112551758</updated>
+    </task>
+    <task id="LOCAL-00007" summary="fix: added lucil-react as dependencies">
+      <option name="closed" value="true" />
+      <created>1774112846897</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1774112846897</updated>
+    </task>
+    <task id="LOCAL-00008" summary="feat: added authentification logic">
+      <option name="closed" value="true" />
+      <created>1774123250347</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1774123250347</updated>
+    </task>
+    <task id="LOCAL-00009" summary="feat: added decks and card display logic">
+      <option name="closed" value="true" />
+      <created>1774130875309</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1774130875309</updated>
+    </task>
+    <task id="LOCAL-00010" summary="feat: added upload logic">
+      <option name="closed" value="true" />
+      <created>1774144395377</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1774144395377</updated>
+    </task>
+    <task id="LOCAL-00011" summary="feat: lots of updates">
+      <option name="closed" value="true" />
+      <created>1774168451810</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1774168451810</updated>
+    </task>
+    <task id="LOCAL-00012" summary="feat: add missing pages">
+      <option name="closed" value="true" />
+      <created>1774168514579</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1774168514579</updated>
+    </task>
+    <task id="LOCAL-00013" summary="feat: ui/ux improvement">
+      <option name="closed" value="true" />
+      <created>1774187396606</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1774187396606</updated>
+    </task>
+    <task id="LOCAL-00014" summary="feat: added req.txt">
+      <option name="closed" value="true" />
+      <created>1774187484608</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1774187484608</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -156,6 +240,26 @@
     <MESSAGE value="Init" />
     <MESSAGE value="main" />
     <MESSAGE value="update: added decks and fixed ui . Commit might be too" />
-    <option name="LAST_COMMIT_MESSAGE" value="update: added decks and fixed ui . Commit might be too" />
+    <MESSAGE value="fix: Proper calendar icon added and unusable data removed" />
+    <MESSAGE value="fix: added lucil-react as dependencies" />
+    <MESSAGE value="feat: added authentification logic" />
+    <MESSAGE value="feat: added decks and card display logic" />
+    <MESSAGE value="feat: added upload logic" />
+    <MESSAGE value="feat: lots of updates" />
+    <MESSAGE value="feat: add missing pages" />
+    <MESSAGE value="feat: ui/ux improvement" />
+    <MESSAGE value="feat: added req.txt" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: added req.txt" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/app/page.tsx</url>
+          <line>565</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

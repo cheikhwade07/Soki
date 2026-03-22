@@ -16,3 +16,68 @@ input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+@keyframes hero-signal-travel {
+  0%,
+  12% {
+    stroke-dashoffset: 120;
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  88%,
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+
+.hero-brain-line {
+  filter: drop-shadow(0 0 10px rgba(30, 64, 175, 0.12));
+}
+
+.hero-signal-line {
+  stroke-dasharray: 18 82;
+  stroke-dashoffset: 120;
+  animation: hero-signal-travel 7.4s linear infinite;
+  animation-play-state: paused;
+  filter: drop-shadow(0 0 24px rgba(255, 255, 255, 1))
+    drop-shadow(0 0 54px rgba(255, 255, 255, 1));
+}
+
+
+.hero-signal-delay-1 {
+  animation-delay: 0s;
+  animation-duration: 7.1s;
+}
+
+.hero-signal-delay-2 {
+  animation-delay: 0.7s;
+  animation-duration: 7.8s;
+}
+
+.hero-signal-delay-3 {
+  animation-delay: 1.4s;
+  animation-duration: 8.4s;
+}
+
+.hero-signal-delay-4 {
+  animation-delay: 2s;
+  animation-duration: 7.6s;
+}
+
+.hero-signal-delay-5 {
+  animation-delay: 1s;
+  animation-duration: 8.9s;
+}
+
+.hero-signal-active {
+  animation-play-state: running;
+}
+
+.hero-signal-active {
+  animation-play-state: running;
+}
