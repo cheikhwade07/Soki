@@ -1,88 +1,77 @@
-// This file contains type definitions for your data.
-// It describes the shape of the data, and what data type each property should accept.
-// For simplicity of teaching, we're manually defining these types.
-// However, these types are generated automatically if you're using an ORM such as Prisma.
+// Type definitions for Soki Learning App
+
 export type User = {
-  id: string;
-  name: string;
+  user_id: string;
   email: string;
-  password: string;
+  password_hash: string;
+  created_at: string;
 };
 
-export type Customer = {
-  id: string;
-  name: string;
-  email: string;
-  image_url: string;
+export type Deck = {
+  deck_id: string;
+  user_id: string;
+  parent_deck_id: string | null;
+  deck_kind: 'container' | 'cards' | null;
+  title: string;
+  description: string | null;
+  created_at: string;
 };
 
-export type Invoice = {
-  id: string;
-  customer_id: string;
-  amount: number;
-  date: string;
-  // In TypeScript, this is called a string union type.
-  // It means that the "status" property can only be one of the two strings: 'pending' or 'paid'.
-  status: 'pending' | 'paid';
+export type DeckWithCounts = Deck & {
+  card_count: number;
+  subdeck_count: number;
 };
 
-export type Revenue = {
-  month: string;
-  revenue: number;
+export type Card = {
+  card_id: string;
+  deck_id: string;
+  card_type: 'flashcard' | 'mcq' | 'methodology';
+  front: string;
+  back: string;
+  created_at: string;
+  updated_at?: string;
 };
 
-export type LatestInvoice = {
-  id: string;
-  name: string;
-  image_url: string;
-  email: string;
-  amount: string;
+export type ReviewRating = 'again' | 'hard' | 'good' | 'easy';
+export type MemoryState = 'new' | 'learning' | 'review' | 'relearning';
+
+export type ReviewState = {
+  card_id: string;
+  user_id: string;
+  due_at: string;
+  last_reviewed_at: string | null;
+  stability: number;
+  difficulty: number;
+  elapsed_days: number;
+  scheduled_days: number;
+  reps: number;
+  lapses: number;
+  state: MemoryState;
+  created_at: string;
+  updated_at: string;
 };
 
-// The database returns a number for amount, but we later format it to a string with the formatCurrency function
-export type LatestInvoiceRaw = Omit<LatestInvoice, 'amount'> & {
-  amount: number;
+export type ReviewEvent = {
+  review_event_id: string;
+  card_id: string;
+  user_id: string;
+  rating: ReviewRating;
+  reviewed_at: string;
+  previous_due_at: string | null;
+  next_due_at: string;
+  previous_stability: number | null;
+  next_stability: number;
+  previous_difficulty: number | null;
+  next_difficulty: number;
+  response_ms: number | null;
 };
 
-export type InvoicesTable = {
-  id: string;
-  customer_id: string;
-  name: string;
-  email: string;
-  image_url: string;
-  date: string;
-  amount: number;
-  status: 'pending' | 'paid';
+export type DueReview = ReviewState & {
+  card_front: string | null;
 };
 
-export type CustomersTableType = {
-  id: string;
-  name: string;
-  email: string;
-  image_url: string;
-  total_invoices: number;
-  total_pending: number;
-  total_paid: number;
-};
-
-export type FormattedCustomersTable = {
-  id: string;
-  name: string;
-  email: string;
-  image_url: string;
-  total_invoices: number;
-  total_pending: string;
-  total_paid: string;
-};
-
-export type CustomerField = {
-  id: string;
-  name: string;
-};
-
-export type InvoiceForm = {
-  id: string;
-  customer_id: string;
-  amount: number;
-  status: 'pending' | 'paid';
+export type ReviewQueueCard = ReviewState & {
+  card_type: 'flashcard' | 'mcq' | 'methodology';
+  front: string;
+  back: string;
 };

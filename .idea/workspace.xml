@@ -4,12 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0cfde415-a614-43ed-bcc8-950fb2bfdb5e" name="Changes" comment="deleted seed">
+    <list default="true" id="0cfde415-a614-43ed-bcc8-950fb2bfdb5e" name="Changes" comment="feat: add missing pages">
+      <change afterPath="$PROJECT_DIR$/app/api/generate-cards/route.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/api/review-card/route.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Soki.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Soki.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ui/fonts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/fonts.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ui/global.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/global.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/new_logo.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend.py" beforeDir="false" afterPath="$PROJECT_DIR$/Backend.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/dashboard/active_recall/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/dashboard/active_recall/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/dashboard/decks/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/dashboard/decks/[id]/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/dashboard/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/dashboard/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/lib/data.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/lib/data.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ui/dashboard/calendar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/dashboard/calendar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ui/dashboard/dropfile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/dashboard/dropfile.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ui/dashboard/review-session.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/dashboard/review-session.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pnpm-lock.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pnpm-lock.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,7 +27,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="61" />
+    <option name="cachedIndexableFilesCount" value="82" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -27,17 +37,18 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="ROOT_SYNC" value="SYNC" />
+    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
     &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;MartinMM-coder&quot;
+    &quot;assignee&quot;: &quot;cheikhwade07&quot;
   }
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/cheikhwade07/Soki.git&quot;,
-    &quot;accountId&quot;: &quot;9ebe9553-c5c4-41fb-b57e-7c126284fed0&quot;
+    &quot;accountId&quot;: &quot;6525fb8c-6495-491e-b787-f43cfd3e86fe&quot;
   }
 }</component>
   <component name="McpProjectServerCommands">
@@ -60,27 +71,31 @@
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Martin&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Cheikh&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;javascript.preferred.runtime.type.id&quot;: &quot;node&quot;,
     &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
     &quot;js.debugger.nextJs.config.created.server&quot;: &quot;true&quot;,
+    &quot;kronk.content.tree.expanded.paths&quot;: &quot;&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/seydi/OneDrive/Desktop/Winter 2026/MindHack/Soki&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_interpreter_path&quot;: &quot;node&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;pnpm&quot;,
     &quot;npm.Next.js: server-side.executor&quot;: &quot;Run&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;settings.javascript.runtime&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\madma\\OneDrive\\เดสก์ท็อป\\MindHack\\node_modules\\typescript\\lib&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\seydi\\OneDrive\\Desktop\\Winter 2026\\MindHack\\Soki\\node_modules\\typescript\\lib&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\seydi\OneDrive\Desktop\Winter 2026\MindHack\Soki" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\seydi\OneDrive\Desktop\Winter 2026\MindHack\Soki\app" />
+      <recent name="C:\Users\seydi\OneDrive\Desktop\Winter 2026\MindHack\Soki\app\dashboard\(overview)" />
     </key>
   </component>
   <component name="RunManager" selected="npm.Next.js: server-side">
@@ -94,7 +109,6 @@
         <script value="dev" />
       </scripts>
       <node-interpreter value="project" />
-      <package-manager value="npm" />
       <envs />
       <method v="2" />
     </configuration>
@@ -102,7 +116,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-WS-253.32098.39" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-WS-253.29346.242" />
       </set>
     </attachedChunks>
   </component>
@@ -115,8 +129,8 @@
       <updated>1774059926045</updated>
       <workItem from="1774059927682" duration="171000" />
       <workItem from="1774060127348" duration="1998000" />
-      <workItem from="1774117902206" duration="18475000" />
-      <workItem from="1774141179656" duration="11676000" />
+      <workItem from="1774169404536" duration="7495000" />
+      <workItem from="1774177215943" duration="2616000" />
     </task>
     <task id="LOCAL-00001" summary="Init">
       <option name="closed" value="true" />
@@ -158,15 +172,63 @@
       <option name="project" value="LOCAL" />
       <updated>1774106771456</updated>
     </task>
-    <task id="LOCAL-00006" summary="deleted seed">
+    <task id="LOCAL-00006" summary="fix: Proper calendar icon added and unusable data removed">
       <option name="closed" value="true" />
-      <created>1774118671381</created>
+      <created>1774112551758</created>
       <option name="number" value="00006" />
       <option name="presentableId" value="LOCAL-00006" />
       <option name="project" value="LOCAL" />
-      <updated>1774118671381</updated>
+      <updated>1774112551758</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="fix: added lucil-react as dependencies">
+      <option name="closed" value="true" />
+      <created>1774112846897</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1774112846897</updated>
+    </task>
+    <task id="LOCAL-00008" summary="feat: added authentification logic">
+      <option name="closed" value="true" />
+      <created>1774123250347</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1774123250347</updated>
+    </task>
+    <task id="LOCAL-00009" summary="feat: added decks and card display logic">
+      <option name="closed" value="true" />
+      <created>1774130875309</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1774130875309</updated>
+    </task>
+    <task id="LOCAL-00010" summary="feat: added upload logic">
+      <option name="closed" value="true" />
+      <created>1774144395377</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1774144395377</updated>
+    </task>
+    <task id="LOCAL-00011" summary="feat: lots of updates">
+      <option name="closed" value="true" />
+      <created>1774168451810</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1774168451810</updated>
+    </task>
+    <task id="LOCAL-00012" summary="feat: add missing pages">
+      <option name="closed" value="true" />
+      <created>1774168514579</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1774168514579</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -176,7 +238,13 @@
     <MESSAGE value="Init" />
     <MESSAGE value="main" />
     <MESSAGE value="update: added decks and fixed ui . Commit might be too" />
-    <MESSAGE value="deleted seed" />
-    <option name="LAST_COMMIT_MESSAGE" value="deleted seed" />
+    <MESSAGE value="fix: Proper calendar icon added and unusable data removed" />
+    <MESSAGE value="fix: added lucil-react as dependencies" />
+    <MESSAGE value="feat: added authentification logic" />
+    <MESSAGE value="feat: added decks and card display logic" />
+    <MESSAGE value="feat: added upload logic" />
+    <MESSAGE value="feat: lots of updates" />
+    <MESSAGE value="feat: add missing pages" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: add missing pages" />
   </component>
 </project>
