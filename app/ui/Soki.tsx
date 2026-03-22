@@ -1,4 +1,4 @@
-import { GlobeAltIcon } from '@heroicons/react/24/outline';
+import { BrainCog } from 'lucide-react';
 import { lusitana } from '@/app/ui/fonts';
 
 export default function Soki() {
@@ -6,7 +6,7 @@ export default function Soki() {
     <div
       className={`${lusitana.className} flex flex-row items-center leading-none text-white`}
     >
-      <GlobeAltIcon className="h-12 w-12 rotate-[15deg]" />
+      <BrainCog className="h-11 w-11" />
       <p className="text-[44px]">Soki</p>
     </div>
   );
