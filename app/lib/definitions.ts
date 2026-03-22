@@ -34,13 +34,12 @@ export type Card = {
 export type Deadline = {
   deadline_id: string;
   user_id: string;
-  deck_id: string | null;
+  card_id: string ;
   title: string;
   due_date: string;
   created_at: string;
 };
 
-// Deadline joined with deck title for display
-export type DeadlineWithDeck = Deadline & {
-  deck_title: string | null;
+export type DeadlineWithCard = Deadline & {
+  card_front: string | null;  // was deck_title
 };

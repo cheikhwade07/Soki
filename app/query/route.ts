@@ -4,6 +4,10 @@ import postgres from 'postgres';
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
 export async function GET() {
+    if (process.env.NODE_ENV !== 'development') {
+        return Response.json({ error: 'Not found' }, { status: 404 });
+    }
+
     try {
         const result = await sql`SELECT NOW() as time`;
         const users = await sql`SELECT user_id, email FROM users`;
