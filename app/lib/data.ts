@@ -131,21 +131,38 @@ export async function fetchUpcomingReviews(userId: string) {
   }
 }
 
-export async function fetchReviewQueue(userId: string) {
+export async function fetchReviewQueue(userId: string, deckId?: string) {
   try {
-    const data = await sql<ReviewQueueCard[]>`
-      SELECT
-        rs.*,
-        c.card_type,
-        c.front,
-        c.back
-      FROM review_state rs
-      JOIN cards c ON rs.card_id = c.card_id
-      JOIN decks d ON c.deck_id = d.deck_id
-      WHERE rs.user_id = ${userId}
-        AND d.user_id = ${userId}
-      ORDER BY rs.due_at ASC
-    `;
+    const data = deckId
+      ? await sql<ReviewQueueCard[]>`
+          SELECT
+            rs.*,
+            c.card_type,
+            c.front,
+            c.back
+          FROM review_state rs
+          JOIN cards c ON rs.card_id = c.card_id
+          JOIN decks d ON c.deck_id = d.deck_id
+          WHERE rs.user_id = ${userId}
+            AND d.user_id = ${userId}
+            AND c.deck_id = ${deckId}
+            AND rs.due_at <= NOW()
+          ORDER BY rs.due_at ASC
+        `
+      : await sql<ReviewQueueCard[]>`
+          SELECT
+            rs.*,
+            c.card_type,
+            c.front,
+            c.back
+          FROM review_state rs
+          JOIN cards c ON rs.card_id = c.card_id
+          JOIN decks d ON c.deck_id = d.deck_id
+          WHERE rs.user_id = ${userId}
+            AND d.user_id = ${userId}
+            AND rs.due_at <= NOW()
+          ORDER BY rs.due_at ASC
+        `;
     return data;
   } catch (error) {
     console.error('Database Error:', error);
@@ -167,17 +184,38 @@ export async function fetchDashboardData(userId: string) {
       SELECT COUNT(*) FROM review_state
       WHERE user_id = ${userId} AND due_at >= NOW()
     `;
+    const dueNowPromise = sql`
+      SELECT COUNT(*) FROM review_state
+      WHERE user_id = ${userId} AND due_at <= NOW()
+    `;
+    const masteredPromise = sql`
+      SELECT COUNT(*) FROM review_state
+      WHERE user_id = ${userId}
+        AND state = 'review'
+        AND stability >= 5
+    `;
+    const recentReviewsPromise = sql`
+      SELECT COUNT(*) FROM review_events
+      WHERE user_id = ${userId}
+        AND reviewed_at >= NOW() - INTERVAL '7 days'
+    `;
 
     const data = await Promise.all([
       deckCountPromise,
       cardCountPromise,
       reviewCountPromise,
+      dueNowPromise,
+      masteredPromise,
+      recentReviewsPromise,
     ]);
 
     return {
       totalDecks: Number(data[0][0].count ?? '0'),
       totalCards: Number(data[1][0].count ?? '0'),
       upcomingDeadlines: Number(data[2][0].count ?? '0'),
+      dueNow: Number(data[3][0].count ?? '0'),
+      masteredCards: Number(data[4][0].count ?? '0'),
+      reviewedThisWeek: Number(data[5][0].count ?? '0'),
     };
   } catch (error) {
     console.error('Database Error:', error);

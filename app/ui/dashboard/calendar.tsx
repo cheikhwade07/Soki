@@ -138,12 +138,6 @@ export function DeadlineCalendar({ deadlines }: { deadlines: DueReview[] }) {
         setFocusDate(startOfDay(nextFocus));
     };
 
-    const resetToToday = () => {
-        setFocusDate(today);
-        setCurrentMonth(today.getMonth());
-        setCurrentYear(today.getFullYear());
-    };
-
     const monthName = new Date(currentYear, currentMonth).toLocaleString('default', {
         month: 'long',
         year: 'numeric',
@@ -216,19 +210,13 @@ export function DeadlineCalendar({ deadlines }: { deadlines: DueReview[] }) {
                 <div className="flex items-center gap-3">
                     <button
                         onClick={prevPeriod}
-                        className="rounded bg-gray-800 px-3 py-1 text-sm text-gray-300 hover:bg-gray-700"
+                        className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-gray-50"
                     >
                         Prev
                     </button>
                     <button
-                        onClick={resetToToday}
-                        className="rounded border border-gray-300 px-3 py-1 text-sm text-gray-700 hover:bg-gray-50"
-                    >
-                        Today
-                    </button>
-                    <button
                         onClick={nextPeriod}
-                        className="rounded bg-gray-800 px-3 py-1 text-sm text-gray-300 hover:bg-gray-700"
+                        className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-gray-50"
                     >
                         Next
                     </button>

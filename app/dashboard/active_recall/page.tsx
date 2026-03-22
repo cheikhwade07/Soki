@@ -1,12 +1,12 @@
 import { auth } from '@/auth';
-import { fetchReviewQueue } from '@/app/lib/data';
+import { fetchDeckById, fetchReviewQueue } from '@/app/lib/data';
 import { ReviewSession } from '@/app/ui/dashboard/review-session';
-import { redirect } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 
 export default async function Page({
     searchParams,
 }: {
-    searchParams?: Promise<{ cardId?: string }>;
+    searchParams?: Promise<{ cardId?: string; deckId?: string }>;
 }) {
     const session = await auth();
     const userId = session?.user?.id;
@@ -16,7 +16,17 @@ export default async function Page({
     }
 
     const params = await searchParams;
-    const queue = await fetchReviewQueue(userId);
+    const deckId = params?.deckId;
+
+    if (deckId) {
+        const deck = await fetchDeckById(deckId, userId);
+
+        if (!deck) {
+            notFound();
+        }
+    }
+
+    const queue = await fetchReviewQueue(userId, deckId);
 
     return <ReviewSession queue={queue} initialCardId={params?.cardId} />;
 }

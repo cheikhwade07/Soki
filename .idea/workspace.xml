@@ -4,36 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0cfde415-a614-43ed-bcc8-950fb2bfdb5e" name="Changes" comment="feat: added upload logic">
-      <change afterPath="$PROJECT_DIR$/app/ui/back-button.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/ui/dashboard/review-session.tsx" afterDir="false" />
+    <list default="true" id="0cfde415-a614-43ed-bcc8-950fb2bfdb5e" name="Changes" comment="feat: add missing pages">
+      <change afterPath="$PROJECT_DIR$/app/api/generate-cards/route.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/api/review-card/route.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Soki.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Soki.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/signup/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/signup/route.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend.py" beforeDir="false" afterPath="$PROJECT_DIR$/Backend.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/dashboard/active_recall/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/dashboard/active_recall/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/dashboard/calendar/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/dashboard/calendar/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/dashboard/decks/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/dashboard/decks/[id]/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/dashboard/decks/new/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/dashboard/decks/new/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/dashboard/decks/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/dashboard/decks/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/dashboard/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/dashboard/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/lib/action.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/lib/action.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/lib/data.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/lib/data.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/lib/definitions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/lib/definitions.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/login/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/login/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/query/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/query/route.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/seed/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/seed/route.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ui/customers/table.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/customers/table.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/ui/dashboard/calendar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/dashboard/calendar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ui/dashboard/card.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/dashboard/card.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ui/dashboard/deck.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/dashboard/deck.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/ui/dashboard/dropfile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/dashboard/dropfile.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ui/dashboard/nav-links.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/dashboard/nav-links.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ui/dashboard/revenue-chart.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/dashboard/revenue-chart.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ui/invoices/create-form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/invoices/create-form.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ui/invoices/edit-form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/invoices/edit-form.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ui/invoices/pagination.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/invoices/pagination.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ui/invoices/table.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/invoices/table.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth.ts" beforeDir="false" afterPath="$PROJECT_DIR$/auth.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ui/dashboard/review-session.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/dashboard/review-session.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pnpm-lock.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pnpm-lock.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,7 +27,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="59" />
+    <option name="cachedIndexableFilesCount" value="82" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -51,13 +37,20 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="ROOT_SYNC" value="SYNC" />
+    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/cheikhwade07/Soki.git",
-    "accountId": "6525fb8c-6495-491e-b787-f43cfd3e86fe"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;cheikhwade07&quot;
   }
-}]]></component>
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/cheikhwade07/Soki.git&quot;,
+    &quot;accountId&quot;: &quot;6525fb8c-6495-491e-b787-f43cfd3e86fe&quot;
+  }
+}</component>
   <component name="McpProjectServerCommands">
     <commands />
     <urls />
@@ -70,31 +63,32 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "Cheikh",
-    "ignore.virus.scanning.warn.message": "true",
-    "javascript.preferred.runtime.type.id": "node",
-    "js.debugger.nextJs.config.created.client": "true",
-    "js.debugger.nextJs.config.created.server": "true",
-    "last_opened_file_path": "C:/Users/seydi/OneDrive/Desktop/Winter 2026/MindHack/Soki",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "pnpm",
-    "npm.Next.js: server-side.executor": "Run",
-    "settings.editor.selected.configurable": "ml.llm.LLMConfigurable",
-    "ts.external.directory.path": "C:\\Users\\seydi\\OneDrive\\Desktop\\Winter 2026\\MindHack\\Soki\\node_modules\\typescript\\lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Cheikh&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;javascript.preferred.runtime.type.id&quot;: &quot;node&quot;,
+    &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
+    &quot;js.debugger.nextJs.config.created.server&quot;: &quot;true&quot;,
+    &quot;kronk.content.tree.expanded.paths&quot;: &quot;&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/seydi/OneDrive/Desktop/Winter 2026/MindHack/Soki&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;pnpm&quot;,
+    &quot;npm.Next.js: server-side.executor&quot;: &quot;Run&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\seydi\\OneDrive\\Desktop\\Winter 2026\\MindHack\\Soki\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\seydi\OneDrive\Desktop\Winter 2026\MindHack\Soki" />
@@ -135,6 +129,8 @@
       <updated>1774059926045</updated>
       <workItem from="1774059927682" duration="171000" />
       <workItem from="1774060127348" duration="1998000" />
+      <workItem from="1774169404536" duration="7495000" />
+      <workItem from="1774177215943" duration="2616000" />
     </task>
     <task id="LOCAL-00001" summary="Init">
       <option name="closed" value="true" />
@@ -216,7 +212,23 @@
       <option name="project" value="LOCAL" />
       <updated>1774144395377</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="feat: lots of updates">
+      <option name="closed" value="true" />
+      <created>1774168451810</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1774168451810</updated>
+    </task>
+    <task id="LOCAL-00012" summary="feat: add missing pages">
+      <option name="closed" value="true" />
+      <created>1774168514579</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1774168514579</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -231,6 +243,8 @@
     <MESSAGE value="feat: added authentification logic" />
     <MESSAGE value="feat: added decks and card display logic" />
     <MESSAGE value="feat: added upload logic" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: added upload logic" />
+    <MESSAGE value="feat: lots of updates" />
+    <MESSAGE value="feat: add missing pages" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: add missing pages" />
   </component>
 </project>

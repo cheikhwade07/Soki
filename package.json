@@ -2,7 +2,9 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "dev": "next dev --turbopack",
+    "dev": "concurrently \"pnpm dev:web\" \"pnpm dev:api\"",
+    "dev:web": "next dev --turbopack",
+    "dev:api": ".\\.venv\\Scripts\\python -m uvicorn Backend:app --host 127.0.0.1 --port 8000",
     "start": "next start"
   },
   "dependencies": {
@@ -24,6 +26,7 @@
     "zod": "^3.25.17"
   },
   "devDependencies": {
+    "concurrently": "^9.2.1",
     "@types/bcrypt": "^5.0.2",
     "@types/node": "22.10.7",
     "@types/react": "19.0.7",

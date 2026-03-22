@@ -59,22 +59,42 @@ export default async function Page() {
                     <p className="mt-2 text-sm text-gray-600">Manual and generated prompts available for recall practice.</p>
                 </div>
                 <div className="rounded-2xl border border-amber-100 bg-amber-50 p-5 shadow-sm">
-                    <p className="text-sm font-medium text-amber-700">Upcoming Reviews</p>
-                    <p className="mt-3 text-3xl font-semibold text-slate-900">{stats.upcomingDeadlines}</p>
-                    <p className="mt-2 text-sm text-gray-600">Scheduled cards waiting in the calendar and review queue.</p>
+                    <p className="text-sm font-medium text-amber-700">Due Now</p>
+                    <p className="mt-3 text-3xl font-semibold text-slate-900">{stats.dueNow}</p>
+                    <p className="mt-2 text-sm text-gray-600">Cards ready for immediate review in the active recall queue.</p>
                 </div>
                 <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                     <p className="text-sm font-medium text-slate-700">Best Next Step</p>
                     <p className="mt-3 text-lg font-semibold text-slate-900">
-                        {stats.totalDecks === 0 ? 'Create your first deck' : stats.totalCards === 0 ? 'Add your first cards' : 'Jump into review'}
+                        {stats.totalDecks === 0 ? 'Create your first deck' : stats.totalCards === 0 ? 'Add your first cards' : stats.dueNow > 0 ? 'Start a review session' : 'Generate or add more cards'}
                     </p>
                     <p className="mt-2 text-sm text-gray-600">
                         {stats.totalDecks === 0
                             ? 'Build a deck structure first, then decide whether it holds cards or nested decks.'
                             : stats.totalCards === 0
                                 ? 'Populate a card deck manually or stage file-based generation.'
-                                : 'Use active recall or calendar to move through scheduled practice.'}
+                                : stats.dueNow > 0
+                                    ? 'Your due queue is ready. Review now to keep cards moving forward.'
+                                    : 'Your queue is clear for now. Add more cards or prepare the next deck.'}
                     </p>
+                </div>
+            </section>
+
+            <section className="grid gap-4 lg:grid-cols-3">
+                <div className="rounded-2xl border border-rose-100 bg-rose-50 p-6 shadow-sm">
+                    <p className="text-sm font-medium text-rose-700">Upcoming Reviews</p>
+                    <p className="mt-3 text-3xl font-semibold text-slate-900">{stats.upcomingDeadlines}</p>
+                    <p className="mt-2 text-sm text-gray-600">Cards scheduled ahead, visible in the calendar and the next review wave.</p>
+                </div>
+                <div className="rounded-2xl border border-violet-100 bg-violet-50 p-6 shadow-sm">
+                    <p className="text-sm font-medium text-violet-700">Mastered Cards</p>
+                    <p className="mt-3 text-3xl font-semibold text-slate-900">{stats.masteredCards}</p>
+                    <p className="mt-2 text-sm text-gray-600">Stable review cards that are holding up well under the scheduler.</p>
+                </div>
+                <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-6 shadow-sm">
+                    <p className="text-sm font-medium text-emerald-700">Reviewed This Week</p>
+                    <p className="mt-3 text-3xl font-semibold text-slate-900">{stats.reviewedThisWeek}</p>
+                    <p className="mt-2 text-sm text-gray-600">Recent completed reviews recorded in your learning history.</p>
                 </div>
             </section>
 

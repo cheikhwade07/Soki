@@ -1,6 +1,8 @@
 "use client";
 
 import { ChangeEvent, DragEvent, useRef, useState } from "react";
+
+import { useRouter } from "next/navigation";
 import { FileText, LoaderCircle, Upload, WandSparkles } from "lucide-react";
 
 type DropFilesProps = {
@@ -8,6 +10,7 @@ type DropFilesProps = {
 };
 
 export function DropFiles({ deckId }: DropFilesProps) {
+    const router = useRouter();
     const [isDragging, setIsDragging] = useState(false);
     const [files, setFiles] = useState<File[]>([]);
     const [uploading, setUploading] = useState(false);
@@ -63,20 +66,60 @@ export function DropFiles({ deckId }: DropFilesProps) {
         setFiles((previousFiles) => previousFiles.filter((_, fileIndex) => fileIndex !== index));
     };
 
+    const readJsonSafely = async (response: Response) => {
+        const text = await response.text();
+
+        if (!text) {
+            return null;
+        }
+
+        try {
+            return JSON.parse(text);
+        } catch {
+            return { raw: text };
+        }
+    };
+
     const handleUpload = async () => {
         if (files.length === 0) return;
+        if (!deckId) {
+            setMessage('Create a deck first, then generate cards into it.');
+            return;
+        }
 
         setUploading(true);
-        setMessage("Uploading files and preparing generation...");
+        setMessage("Uploading files and generating cards...");
 
-        setTimeout(() => {
+        try {
+            let totalGenerated = 0;
+
+            for (const file of files) {
+                const formData = new FormData();
+                formData.append('deckId', deckId);
+                formData.append('file', file);
+
+                const response = await fetch('/api/generate-cards', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const payload = await readJsonSafely(response);
+
+                if (!response.ok) {
+                    throw new Error(payload?.error ?? payload?.raw ?? 'Failed to generate cards.');
+                }
+
+                totalGenerated += Number(payload.count ?? 0);
+            }
+
+            setFiles([]);
+            setMessage(`Generated and saved ${totalGenerated} card${totalGenerated !== 1 ? 's' : ''}.`);
+            router.refresh();
+        } catch (error) {
+            setMessage(error instanceof Error ? error.message : 'Failed to generate cards.');
+        } finally {
             setUploading(false);
-            setMessage(
-                deckId
-                    ? 'Files staged successfully. Connect the generation backend to turn this PDF into saved cards automatically.'
-                    : 'Create a deck first, then connect the generation backend to save cards automatically.',
-            );
-        }, 800);
+        }
     };
 
     return (
@@ -106,22 +149,22 @@ export function DropFiles({ deckId }: DropFilesProps) {
                     {isDragging ? "Drop PDF files here" : "Drag and drop PDF files here, or click to browse"}
                 </p>
                 <p className="mt-2 text-sm text-gray-500">
-                    Stage lecture slides or notes for card generation. The backend can later convert these files into saved recall prompts.
+                    Upload a PDF and send it straight to the generation backend. Generated cards will be saved into this deck automatically.
                 </p>
             </div>
 
             <div className="grid gap-3 rounded-2xl border border-gray-200 bg-gray-50 p-4 md:grid-cols-3">
                 <div className="rounded-xl bg-white p-3 shadow-sm">
                     <p className="text-xs font-medium uppercase tracking-wide text-gray-500">1. Upload</p>
-                    <p className="mt-2 text-sm text-slate-700">Add PDFs that represent the source material.</p>
+                    <p className="mt-2 text-sm text-slate-700">Add the PDF source material for this deck.</p>
                 </div>
                 <div className="rounded-xl bg-white p-3 shadow-sm">
                     <p className="text-xs font-medium uppercase tracking-wide text-gray-500">2. Generate</p>
-                    <p className="mt-2 text-sm text-slate-700">Send the file to the generation pipeline when the backend is ready.</p>
+                    <p className="mt-2 text-sm text-slate-700">Send it to the FastAPI backend to create study prompts.</p>
                 </div>
                 <div className="rounded-xl bg-white p-3 shadow-sm">
-                    <p className="text-xs font-medium uppercase tracking-wide text-gray-500">3. Review</p>
-                    <p className="mt-2 text-sm text-slate-700">Cards save into the deck and become part of active recall.</p>
+                    <p className="text-xs font-medium uppercase tracking-wide text-gray-500">3. Save</p>
+                    <p className="mt-2 text-sm text-slate-700">New cards are inserted into the deck and review queue immediately.</p>
                 </div>
             </div>
 
@@ -157,7 +200,7 @@ export function DropFiles({ deckId }: DropFilesProps) {
 
                     <div className="flex items-center justify-between rounded-2xl border border-gray-200 bg-slate-900 p-4 text-white">
                         <div>
-                            <p className="text-sm font-medium">Ready to stage generation</p>
+                            <p className="text-sm font-medium">Ready to generate cards</p>
                             <p className="mt-1 text-xs text-slate-300">
                                 {files.length} file{files.length !== 1 ? 's' : ''} selected for this deck.
                             </p>
@@ -167,8 +210,8 @@ export function DropFiles({ deckId }: DropFilesProps) {
                             disabled={uploading}
                             className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-medium text-slate-900 hover:bg-slate-100 disabled:opacity-50"
                         >
-                            {uploading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
-                            {uploading ? 'Staging...' : 'Stage Generation'}
+                            {uploading ? <LoaderCircle className="anim" /> : <Upload className="h-4 w-4" />}
+                            {uploading ? 'Generating...' : 'Generate Cards'}
                         </button>
                     </div>
                 </div>

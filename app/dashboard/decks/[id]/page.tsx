@@ -50,6 +50,14 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
                             {isContainer && <p>{subdecks.length} decks</p>}
                             {isCardsDeck && <p>{cards.length} cards</p>}
                         </div>
+                        {isCardsDeck && (
+                            <Link
+                                href={`/dashboard/active_recall?deckId=${deck.deck_id}`}
+                                className="rounded-lg bg-slate-900 px-4 py-3 text-sm font-medium text-white hover:bg-slate-800"
+                            >
+                                Review This Deck
+                            </Link>
+                        )}
                         <Link
                             href={`/dashboard/decks/${deck.deck_id}/add`}
                             className="rounded-lg bg-blue-500 px-4 py-3 text-sm font-medium text-white hover:bg-blue-400"

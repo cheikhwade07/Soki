@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { ReviewQueueCard, ReviewRating } from '@/app/lib/definitions';
 import { BookOpenText, CircleHelp, FilePenLine } from 'lucide-react';
+import Link from 'next/link';
 
 type ReviewSessionProps = {
     queue: ReviewQueueCard[];
@@ -13,6 +14,20 @@ type McqOption = {
     key: string;
     text: string;
 };
+
+async function readJsonSafely(response: Response) {
+    const text = await response.text();
+
+    if (!text) {
+        return null;
+    }
+
+    try {
+        return JSON.parse(text);
+    } catch {
+        return null;
+    }
+}
 
 const ratingStyles: Record<ReviewRating, string> = {
     again: 'bg-red-100 text-red-700 border-red-200',
@@ -105,26 +120,127 @@ function parseMcq(front: string, back: string) {
 }
 
 export function ReviewSession({ queue, initialCardId }: ReviewSessionProps) {
+    const [queueState, setQueueState] = useState(queue);
+    const [completedCount, setCompletedCount] = useState(0);
+    const [ratingCounts, setRatingCounts] = useState<Record<ReviewRating, number>>({
+        again: 0,
+        hard: 0,
+        good: 0,
+        easy: 0,
+    });
     const initialIndex = useMemo(() => {
         if (!initialCardId) {
             return 0;
         }
 
-        const matchedIndex = queue.findIndex((card) => card.card_id === initialCardId);
+        const matchedIndex = queueState.findIndex((card) => card.card_id === initialCardId);
         return matchedIndex >= 0 ? matchedIndex : 0;
-    }, [initialCardId, queue]);
+    }, [initialCardId, queueState]);
 
     const [index, setIndex] = useState(initialIndex);
     const [showAnswer, setShowAnswer] = useState(false);
     const [selectedMcq, setSelectedMcq] = useState<string | null>(null);
+    const [submittingRating, setSubmittingRating] = useState<ReviewRating | null>(null);
+    const [submitError, setSubmitError] = useState<string | null>(null);
+    const [interactionStartedAt, setInteractionStartedAt] = useState(() => Date.now());
+
+    useEffect(() => {
+        setQueueState(queue);
+        setCompletedCount(0);
+        setRatingCounts({
+            again: 0,
+            hard: 0,
+            good: 0,
+            easy: 0,
+        });
+    }, [queue]);
 
     useEffect(() => {
         setIndex(initialIndex);
         setShowAnswer(false);
         setSelectedMcq(null);
-    }, [initialIndex]);
+        setSubmittingRating(null);
+        setSubmitError(null);
+        setInteractionStartedAt(Date.now());
+    }, [initialIndex, queueState.length]);
 
-    const currentCard = queue[index];
+    const stats = useMemo(() => {
+        const now = new Date();
+        const overdue = queueState.filter((card) => new Date(card.due_at) < now).length;
+        const learning = queueState.filter((card) => card.state === 'learning' || card.state === 'relearning').length;
+
+        return {
+            total: queueState.length,
+            overdue,
+            learning,
+        };
+    }, [queueState]);
+
+    const currentCard = queueState[index];
+
+    if (!currentCard) {
+        if (queueState.length === 0 && completedCount > 0) {
+            return (
+                <section className="mx-auto max-w-3xl space-y-6">
+                    <div className="rounded-3xl border border-emerald-200 bg-emerald-50 p-8 shadow-sm">
+                        <p className="text-sm font-medium uppercase tracking-[0.2em] text-emerald-700">
+                            Session Complete
+                        </p>
+                        <h1 className="mt-3 text-3xl font-bold text-slate-900">You cleared the due queue.</h1>
+                        <p className="mt-3 max-w-2xl text-sm text-slate-600">
+                            The scheduler has updated your reviewed cards and there are no more due prompts in this session.
+                        </p>
+
+                        <div className="mt-6 grid gap-4 sm:grid-cols-4">
+                            <div className="rounded-2xl bg-white px-4 py-4">
+                                <p className="text-xs uppercase tracking-wide text-gray-500">Reviewed</p>
+                                <p className="mt-2 text-2xl font-semibold text-slate-900">{completedCount}</p>
+                            </div>
+                            <div className="rounded-2xl bg-white px-4 py-4">
+                                <p className="text-xs uppercase tracking-wide text-gray-500">Again</p>
+                                <p className="mt-2 text-2xl font-semibold text-slate-900">{ratingCounts.again}</p>
+                            </div>
+                            <div className="rounded-2xl bg-white px-4 py-4">
+                                <p className="text-xs uppercase tracking-wide text-gray-500">Good</p>
+                                <p className="mt-2 text-2xl font-semibold text-slate-900">{ratingCounts.good}</p>
+                            </div>
+                            <div className="rounded-2xl bg-white px-4 py-4">
+                                <p className="text-xs uppercase tracking-wide text-gray-500">Easy</p>
+                                <p className="mt-2 text-2xl font-semibold text-slate-900">{ratingCounts.easy}</p>
+                            </div>
+                        </div>
+
+                        <div className="mt-6 flex flex-wrap gap-3">
+                            <Link
+                                href="/dashboard"
+                                className="rounded-xl bg-slate-900 px-5 py-3 text-sm font-medium text-white hover:bg-slate-800"
+                            >
+                                Back To Dashboard
+                            </Link>
+                            <Link
+                                href="/dashboard/calendar"
+                                className="rounded-xl border border-slate-300 px-5 py-3 text-sm font-medium text-slate-700 hover:bg-white"
+                            >
+                                Open Calendar
+                            </Link>
+                        </div>
+                    </div>
+                </section>
+            );
+        }
+
+        return (
+            <section className="max-w-3xl space-y-4">
+                <div>
+                    <h1 className="text-2xl font-bold">Review</h1>
+                    <p className="text-sm text-gray-600">
+                        No cards are due in this queue yet. Try another deck or come back when more reviews are scheduled.
+                    </p>
+                </div>
+            </section>
+        );
+    }
+
     const currentMeta = getReviewMeta(currentCard.card_type);
     const CurrentIcon = currentMeta.icon;
     const parsedMcq = currentCard.card_type === 'mcq' ? parseMcq(currentCard.front, currentCard.back) : null;
@@ -139,38 +255,76 @@ export function ReviewSession({ queue, initialCardId }: ReviewSessionProps) {
             : currentCard.card_type === 'methodology'
                 ? ['again', 'hard', 'good']
                 : ['again', 'hard', 'good', 'easy'];
-
-    const stats = useMemo(() => {
-        const now = new Date();
-        const overdue = queue.filter((card) => new Date(card.due_at) < now).length;
-        const learning = queue.filter((card) => card.state === 'learning' || card.state === 'relearning').length;
-
-        return {
-            total: queue.length,
-            overdue,
-            learning,
-        };
-    }, [queue]);
-
     const goToNextCard = () => {
         setShowAnswer(false);
         setSelectedMcq(null);
-        setIndex((value) => (value + 1) % queue.length);
+        setSubmitError(null);
+        setInteractionStartedAt(Date.now());
+        setIndex((value) => (value + 1) % queueState.length);
     };
 
-    if (queue.length === 0) {
-        return (
-            <section className="max-w-3xl space-y-4">
-                <div>
-                    <h1 className="text-2xl font-bold">Review</h1>
-                    <p className="text-sm text-gray-600">
-                        No cards are scheduled yet. Seed the database or generate cards
-                        from a deck to start a review session.
-                    </p>
-                </div>
-            </section>
-        );
-    }
+    const submitRating = async (rating: ReviewRating) => {
+        if (!currentCard || submittingRating) {
+            return;
+        }
+
+        setSubmittingRating(rating);
+        setSubmitError(null);
+
+        try {
+            const response = await fetch('/api/review-card', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    cardId: currentCard.card_id,
+                    rating,
+                    responseMs: Math.max(0, Date.now() - interactionStartedAt),
+                }),
+            });
+
+            const payload = await readJsonSafely(response);
+
+            if (!response.ok) {
+                throw new Error(payload?.error ?? 'Failed to save review.');
+            }
+
+            const nextQueue = queueState.filter((card) => card.card_id !== currentCard.card_id);
+            setCompletedCount((value) => value + 1);
+            setRatingCounts((counts) => ({
+                ...counts,
+                [rating]: counts[rating] + 1,
+            }));
+
+            if (payload?.review_state && new Date(payload.review_state.due_at).getTime() <= Date.now()) {
+                nextQueue.push({
+                    ...currentCard,
+                    ...payload.review_state,
+                });
+            }
+
+            nextQueue.sort((a, b) => new Date(a.due_at).getTime() - new Date(b.due_at).getTime());
+            setQueueState(nextQueue);
+
+            if (nextQueue.length === 0) {
+                setIndex(0);
+                setShowAnswer(false);
+                setSelectedMcq(null);
+                setInteractionStartedAt(Date.now());
+            } else {
+                const currentPosition = nextQueue.findIndex((card) => card.card_id === currentCard.card_id);
+                setIndex(currentPosition >= 0 ? currentPosition : 0);
+                setShowAnswer(false);
+                setSelectedMcq(null);
+                setInteractionStartedAt(Date.now());
+            }
+        } catch (error) {
+            setSubmitError(error instanceof Error ? error.message : 'Failed to save review.');
+        } finally {
+            setSubmittingRating(null);
+        }
+    };
 
     return (
         <section className="mx-auto max-w-4xl space-y-6">
@@ -187,7 +341,7 @@ export function ReviewSession({ queue, initialCardId }: ReviewSessionProps) {
                 <div className="flex flex-wrap gap-3 text-sm">
                     <div className="rounded-xl bg-gray-50 px-4 py-3">
                         <p className="text-gray-500">Card</p>
-                        <p className="font-semibold text-slate-900">{index + 1} / {queue.length}</p>
+                        <p className="font-semibold text-slate-900">{completedCount + 1} / {completedCount + queueState.length}</p>
                     </div>
                     <div className="rounded-xl bg-gray-50 px-4 py-3">
                         <p className="text-gray-500">Overdue</p>
@@ -298,11 +452,11 @@ export function ReviewSession({ queue, initialCardId }: ReviewSessionProps) {
                                 <button
                                     key={rating}
                                     type="button"
-                                    disabled={!canRate}
-                                    onClick={goToNextCard}
-                                    className={`rounded-xl border px-4 py-3 text-sm font-medium transition-opacity ${ratingStyles[rating]} ${!canRate ? 'cursor-not-allowed opacity-40' : ''}`}
+                                    disabled={!canRate || submittingRating !== null}
+                                    onClick={() => submitRating(rating)}
+                                    className={`rounded-xl border px-4 py-3 text-sm font-medium transition-opacity ${ratingStyles[rating]} ${!canRate || submittingRating !== null ? 'cursor-not-allowed opacity-40' : ''}`}
                                 >
-                                    {rating.charAt(0).toUpperCase() + rating.slice(1)}
+                                    {submittingRating === rating ? 'Saving...' : rating.charAt(0).toUpperCase() + rating.slice(1)}
                                 </button>
                             ))}
                         </div>
@@ -314,6 +468,9 @@ export function ReviewSession({ queue, initialCardId }: ReviewSessionProps) {
                                         ? 'Reveal the methodology to self-assess your approach.'
                                         : 'Reveal the answer to unlock the rating buttons.'}
                             </p>
+                        )}
+                        {submitError && (
+                            <p className="mt-3 text-xs text-red-600">{submitError}</p>
                         )}
                     </div>
 
