@@ -12,7 +12,7 @@ type DropFilesProps = {
 export function DropFiles({ deckId }: DropFilesProps) {
     const router = useRouter();
     const [isDragging, setIsDragging] = useState(false);
-    const [files, setFiles] = useState<File[]>([]);
+    const [file, setFile] = useState<File | null>(null);
     const [uploading, setUploading] = useState(false);
     const [message, setMessage] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -35,14 +35,20 @@ export function DropFiles({ deckId }: DropFilesProps) {
     };
 
     const addPdfFiles = (incomingFiles: File[]) => {
-        const pdfFiles = incomingFiles.filter((file) => file.type === "application/pdf");
-        setFiles((previousFiles) => [...previousFiles, ...pdfFiles]);
+        const pdfFiles = incomingFiles.filter((incomingFile) => incomingFile.type === "application/pdf");
 
-        if (pdfFiles.length !== incomingFiles.length) {
+        if (pdfFiles.length === 0) {
             setMessage("Only PDF files are supported.");
-        } else {
-            setMessage(null);
+            return;
         }
+
+        if (incomingFiles.length > 1 || pdfFiles.length > 1) {
+            setMessage("Only one PDF can be uploaded at a time while the generation system is in beta.");
+        } else {
+            setMessage("Beta note: uploads are currently limited to 5 per day while the generation system is still in beta.");
+        }
+
+        setFile(pdfFiles[0]);
     };
 
     const handleDrop = (event: DragEvent<HTMLDivElement>) => {
@@ -62,8 +68,12 @@ export function DropFiles({ deckId }: DropFilesProps) {
         }
     };
 
-    const removeFile = (index: number) => {
-        setFiles((previousFiles) => previousFiles.filter((_, fileIndex) => fileIndex !== index));
+    const removeFile = () => {
+        setFile(null);
+        setMessage(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
     };
 
     const readJsonSafely = async (response: Response) => {
@@ -81,39 +91,35 @@ export function DropFiles({ deckId }: DropFilesProps) {
     };
 
     const handleUpload = async () => {
-        if (files.length === 0) return;
+        if (!file) return;
         if (!deckId) {
             setMessage('Create a deck first, then generate cards into it.');
             return;
         }
 
         setUploading(true);
-        setMessage("Uploading files and generating cards...");
+        setMessage("Uploading your PDF and generating cards...");
 
         try {
-            let totalGenerated = 0;
+            const formData = new FormData();
+            formData.append('deckId', deckId);
+            formData.append('file', file);
 
-            for (const file of files) {
-                const formData = new FormData();
-                formData.append('deckId', deckId);
-                formData.append('file', file);
+            const response = await fetch('/api/generate-cards', {
+                method: 'POST',
+                body: formData,
+            });
 
-                const response = await fetch('/api/generate-cards', {
-                    method: 'POST',
-                    body: formData,
-                });
+            const payload = await readJsonSafely(response);
 
-                const payload = await readJsonSafely(response);
-
-                if (!response.ok) {
-                    throw new Error(payload?.error ?? payload?.raw ?? 'Failed to generate cards.');
-                }
-
-                totalGenerated += Number(payload.count ?? 0);
+            if (!response.ok) {
+                throw new Error(payload?.error ?? payload?.raw ?? 'Failed to generate cards.');
             }
 
-            setFiles([]);
-            setMessage(`Generated and saved ${totalGenerated} card${totalGenerated !== 1 ? 's' : ''}.`);
+            const totalGenerated = Number(payload?.count ?? 0);
+
+            setFile(null);
+            setMessage(`Generated and saved ${totalGenerated} card${totalGenerated !== 1 ? 's' : ''}. Beta note: uploads are limited to 5 per day.`);
             router.refresh();
         } catch (error) {
             setMessage(error instanceof Error ? error.message : 'Failed to generate cards.');
@@ -137,7 +143,6 @@ export function DropFiles({ deckId }: DropFilesProps) {
                 <input
                     ref={fileInputRef}
                     type="file"
-                    multiple
                     accept="application/pdf"
                     onChange={handleFileInput}
                     className="hidden"
@@ -146,17 +151,17 @@ export function DropFiles({ deckId }: DropFilesProps) {
                     <WandSparkles className="h-6 w-6" />
                 </div>
                 <p className="text-base font-medium text-slate-900">
-                    {isDragging ? "Drop PDF files here" : "Drag and drop PDF files here, or click to browse"}
+                    {isDragging ? "Drop a PDF here" : "Drag and drop a PDF here, or click to browse"}
                 </p>
                 <p className="mt-2 text-sm text-gray-500">
-                    Upload a PDF and send it straight to the generation backend. Generated cards will be saved into this deck automatically.
+                    Upload one PDF at a time and send it straight to the generation backend. Generated cards will be saved into this deck automatically.
                 </p>
             </div>
 
             <div className="grid gap-3 rounded-2xl border border-gray-200 bg-gray-50 p-4 md:grid-cols-3">
                 <div className="rounded-xl bg-white p-3 shadow-sm">
                     <p className="text-xs font-medium uppercase tracking-wide text-gray-500">1. Upload</p>
-                    <p className="mt-2 text-sm text-slate-700">Add the PDF source material for this deck.</p>
+                    <p className="mt-2 text-sm text-slate-700">Add one PDF source file for this deck.</p>
                 </div>
                 <div className="rounded-xl bg-white p-3 shadow-sm">
                     <p className="text-xs font-medium uppercase tracking-wide text-gray-500">2. Generate</p>
@@ -174,35 +179,39 @@ export function DropFiles({ deckId }: DropFilesProps) {
                 </div>
             )}
 
-            {files.length > 0 && (
+            {!message && (
+                <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
+                    Beta note: uploads are currently limited to 5 per day while the generation system is still in beta.
+                </div>
+            )}
+
+            {file && (
                 <div className="space-y-4">
                     <ul className="space-y-2">
-                        {files.map((file, index) => (
-                            <li key={`${file.name}-${index}`} className="flex items-center justify-between rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-                                <div className="flex min-w-0 items-center gap-3">
-                                    <div className="rounded-xl bg-red-50 p-2 text-red-500">
-                                        <FileText className="h-5 w-5" />
-                                    </div>
-                                    <div className="min-w-0">
-                                        <p className="truncate text-sm font-medium text-slate-900">{file.name}</p>
-                                        <p className="text-xs text-gray-500">{(file.size / 1024).toFixed(1)} KB</p>
-                                    </div>
+                        <li className="flex items-center justify-between rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+                            <div className="flex min-w-0 items-center gap-3">
+                                <div className="rounded-xl bg-red-50 p-2 text-red-500">
+                                    <FileText className="h-5 w-5" />
                                 </div>
-                                <button
-                                    onClick={() => removeFile(index)}
-                                    className="ml-4 rounded-lg px-3 py-2 text-sm font-medium text-red-500 hover:bg-red-50"
-                                >
-                                    Remove
-                                </button>
-                            </li>
-                        ))}
+                                <div className="min-w-0">
+                                    <p className="truncate text-sm font-medium text-slate-900">{file.name}</p>
+                                    <p className="text-xs text-gray-500">{(file.size / 1024).toFixed(1)} KB</p>
+                                </div>
+                            </div>
+                            <button
+                                onClick={removeFile}
+                                className="ml-4 rounded-lg px-3 py-2 text-sm font-medium text-red-500 hover:bg-red-50"
+                            >
+                                Remove
+                            </button>
+                        </li>
                     </ul>
 
                     <div className="flex items-center justify-between rounded-2xl border border-gray-200 bg-slate-900 p-4 text-white">
                         <div>
                             <p className="text-sm font-medium">Ready to generate cards</p>
                             <p className="mt-1 text-xs text-slate-300">
-                                {files.length} file{files.length !== 1 ? 's' : ''} selected for this deck.
+                                1 PDF selected for this deck.
                             </p>
                         </div>
                         <button
@@ -210,7 +219,7 @@ export function DropFiles({ deckId }: DropFilesProps) {
                             disabled={uploading}
                             className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-medium text-slate-900 hover:bg-slate-100 disabled:opacity-50"
                         >
-                            {uploading ? <LoaderCircle className="anim" /> : <Upload className="h-4 w-4" />}
+                            {uploading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
                             {uploading ? 'Generating...' : 'Generate Cards'}
                         </button>
                     </div>
