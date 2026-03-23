@@ -1,6 +1,9 @@
 # Soki
 
-Soki is a study app built around active recall and spaced repetition.
+Soki is a memory-focused study app built around active recall and spaced repetition. It turns lecture material into reviewable cards, organizes them into decks, and schedules future review with an FSRS-backed loop.
+
+Live app:
+- https://soki-eight.vercel.app/
 
 Core flow:
 - create decks
@@ -11,12 +14,16 @@ Core flow:
 
 ## Stack
 
-- Frontend: Next.js App Router, TypeScript, Tailwind CSS
+- Frontend: Next.js App Router, React, TypeScript, Tailwind CSS
 - Auth: `next-auth`
 - Database: Postgres / Neon
-- Backend: FastAPI in `Backend.py`
+- Backend API: FastAPI in `Backend.py`
 - AI generation: Gemini API
 - Scheduling: `fsrs` Python library
+- Runtime / deployment:
+  - Node.js for the Next.js app
+  - Vercel for frontend deployment
+  - separate Python web service deployment for FastAPI
 
 ## Current Product Shape
 
@@ -37,6 +44,8 @@ Core flow:
   - Next.js app, routes, UI, API bridges
 - [Backend.py](/C:/Users/seydi/OneDrive/Desktop/Winter%202026/MindHack/Soki/Backend.py)
   - FastAPI backend for PDF parsing, AI generation, and FSRS review updates
+- [auth.ts](/C:/Users/seydi/OneDrive/Desktop/Winter%202026/MindHack/Soki/auth.ts)
+  - Auth.js / NextAuth setup
 - [app/lib/data.ts](/C:/Users/seydi/OneDrive/Desktop/Winter%202026/MindHack/Soki/app/lib/data.ts)
   - database reads
 - [app/lib/action.ts](/C:/Users/seydi/OneDrive/Desktop/Winter%202026/MindHack/Soki/app/lib/action.ts)
@@ -50,21 +59,41 @@ Core flow:
 
 ## Environment Variables
 
-Set these in `.env`:
+Create your own `.env` locally. Do not use the maintainer's database or secrets.
+
+Minimum local setup:
 
 ```env
-POSTGRES_URL=...
-NEXTAUTH_SECRET=...
+POSTGRES_URL=postgresql://<your-user>:<your-password>@<your-host>/<your-db>?sslmode=require
+AUTH_SECRET=<your-own-random-secret>
 NEXTAUTH_URL=http://localhost:3000
 BACKEND_API_URL=http://127.0.0.1:8000
-GEMINI_API_KEY=...
+GEMINI_API_KEY=<your-own-gemini-key>
 ```
 
 Important:
+- each developer should use their own Postgres database
+- each developer should use their own auth secret
+- each developer should use their own Gemini key
 - do not commit real credentials
-- if a Gemini key was exposed, rotate it
+- if a key or password was exposed, rotate it immediately
 
-## Run Locally
+## Database Setup
+
+If you build the app locally, it should use **your own database**, not the maintainer's database.
+
+Recommended options:
+- create your own Neon project and copy its connection string into `POSTGRES_URL`
+- or run a local Postgres instance and point `POSTGRES_URL` at it
+
+Why:
+- local `/seed` drops and recreates tables
+- using someone else's database would overwrite their data
+- a shared dev database creates auth and data conflicts
+
+So yes: every user cloning the repo should set up their own Postgres database first.
+
+## Local Run Process
 
 ### 1. Install frontend dependencies
 
@@ -80,51 +109,91 @@ If you do not already have `.venv`:
 python -m venv .venv
 ```
 
-Install backend packages:
+Then install backend dependencies:
 
 ```bash
-.\.venv\Scripts\python -m pip install fastapi "uvicorn[standard]" pymupdf fsrs google-genai python-multipart
+.\.venv\Scripts\python -m pip install -r requirements.txt
 ```
 
-### 3. Start the FastAPI backend
+### 3. Create and fill `.env`
 
-```bash
-.\.venv\Scripts\python -m uvicorn Backend:app --host 127.0.0.1 --port 8000
-```
+Add your own:
+- `POSTGRES_URL`
+- `AUTH_SECRET`
+- `NEXTAUTH_URL`
+- `BACKEND_API_URL`
+- `GEMINI_API_KEY`
 
-### 4. Start the Next.js frontend
+### 4. Start the app locally
+
+This repo is set up so `pnpm dev` runs both services in parallel:
 
 ```bash
 pnpm dev
 ```
 
+That starts:
+- Next.js frontend on `http://localhost:3000`
+- FastAPI backend on `http://127.0.0.1:8000`
+
+Swagger docs:
+- `http://127.0.0.1:8000/docs`
+
+### 5. Seed your local database
+
+Once your local app is running, open:
+
+```text
+http://localhost:3000/seed?confirm=RESET_SOKI_DEMO_DATA
+```
+
+This drops existing app tables and recreates the demo dataset in **your own database**.
+
+Safety note:
+- `/seed` is destructive
+- it drops and recreates the app tables in whatever database `POSTGRES_URL` points to
+- the route now requires the explicit confirmation token `RESET_SOKI_DEMO_DATA`
+- if you visit `/seed` without confirmation, the app will show a warning and the target database host instead of wiping data
+
+## Production Deployment Notes
+
 Frontend:
-- `http://localhost:3000`
+- deploy the Next.js app to Vercel
 
 Backend:
-- `http://127.0.0.1:8000`
-- Swagger docs: `http://127.0.0.1:8000/docs`
+- deploy `Backend.py` as a separate Python web service
+- set its start command to:
+
+```bash
+uvicorn Backend:app --host 0.0.0.0 --port $PORT
+```
+
+Then point Vercel at the deployed backend:
+
+```env
+BACKEND_API_URL=https://your-fastapi-service.example.com
+```
 
 ## Development Seed
 
-In development, reset and seed the database with:
-
-```text
-/seed
-```
-
-This recreates:
+`/seed` recreates:
 - users
 - decks
 - cards
 - review_state
 - review_events
 
-Demo login:
+Demo users seeded locally:
 
 ```text
-test@soki.com
-123456
+new@soki.com / 123456
+power@soki.com / 123456
+```
+
+Safe usage:
+
+```text
+/seed?confirm=RESET_SOKI_DEMO_DATA
 ```
 
 ## Main Flows
@@ -159,14 +228,3 @@ test@soki.com
 - The PDF generation pipeline currently favors flashcards.
 - The landing page, auth screens, dashboard, deck flow, calendar, and review loop are all wired.
 - The browser build may show a `baseline-browser-mapping` warning. It is non-blocking.
-
-## Recommended Submission Demo Path
-
-1. Seed the app
-2. Log in
-3. Open a deck
-4. Generate cards from a PDF
-5. Open review
-6. Rate a few cards
-7. Show calendar -> review handoff
-8. Show deck-specific review
