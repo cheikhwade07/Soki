@@ -2,13 +2,37 @@ import bcrypt from 'bcrypt';
 import postgres from 'postgres';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require', prepare: false });
+const SEED_CONFIRMATION = 'RESET_SOKI_DEMO_DATA';
 
 const newUserId = '410544b2-4001-4271-9855-fec4b6a6442a';
 const powerUserId = '510544b2-5001-4271-9855-fec4b6a6555b';
 
-export async function GET() {
+function getDatabaseHost() {
+    try {
+        return new URL(process.env.POSTGRES_URL!).hostname;
+    } catch {
+        return 'unknown-host';
+    }
+}
+
+export async function GET(request: Request) {
     if (process.env.NODE_ENV !== 'development') {
         return Response.json({ error: 'Not found' }, { status: 404 });
+    }
+
+    const { searchParams } = new URL(request.url);
+    const confirm = searchParams.get('confirm');
+
+    if (confirm !== SEED_CONFIRMATION) {
+        return Response.json(
+            {
+                warning: 'Seed is destructive and will drop all app tables in the configured database.',
+                database_host: getDatabaseHost(),
+                required_confirmation: SEED_CONFIRMATION,
+                how_to_run: `/seed?confirm=${SEED_CONFIRMATION}`,
+            },
+            { status: 400 },
+        );
     }
 
     try {
@@ -171,6 +195,7 @@ export async function GET() {
 
         return Response.json({
             message: 'Database fully reset and reseeded with two demo users.',
+            database_host: getDatabaseHost(),
             logins: [
                 {
                     profile: 'new-user',
