@@ -80,6 +80,41 @@ function extractBackendError(payload: any) {
   return 'Failed to generate cards.';
 }
 
+export async function GET() {
+  try {
+    const session = await auth();
+    const userId = session?.user?.id;
+
+    if (!userId) {
+      return Response.json({ error: 'Unauthorized.' }, { status: 401 });
+    }
+
+    await ensureGenerationUploadsTable();
+
+    const uploadCountResult = await sql<{ count: string }[]>`
+      SELECT COUNT(*)::text AS count
+      FROM generation_uploads
+      WHERE user_id = ${userId}
+        AND created_at >= date_trunc('day', NOW())
+    `;
+
+    const uploadsToday = Number(uploadCountResult[0]?.count ?? '0');
+
+    return Response.json({
+      dailyUploadLimit: DAILY_UPLOAD_LIMIT,
+      uploadsToday,
+      uploadsRemainingToday: Math.max(0, DAILY_UPLOAD_LIMIT - uploadsToday),
+    });
+  } catch (error) {
+    return Response.json(
+      {
+        error: error instanceof Error ? error.message : 'Unexpected server error.',
+      },
+      { status: 500 },
+    );
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const session = await auth();

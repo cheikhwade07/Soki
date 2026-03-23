@@ -132,6 +132,12 @@ export default function Page() {
               >
                 <p className="font-medium text-slate-900">Get started</p>
               </Link>
+              <Link
+                href="/login"
+                className="block rounded-md px-3 py-2 transition-colors hover:bg-slate-50"
+              >
+                <p className="font-medium text-slate-900">Log in</p>
+              </Link>
             </div>
           </div>
         </details>
@@ -346,6 +352,12 @@ export default function Page() {
                     className="inline-flex items-center gap-3 rounded-xl bg-blue-600 px-6 py-3 text-sm font-medium text-white shadow-[0_18px_40px_rgba(37,99,235,0.26)] transition-colors hover:bg-blue-500"
                   >
                     <span>Start Training</span> <ArrowRightIcon className="w-4" />
+                  </Link>
+                  <Link
+                    href="/login"
+                    className="inline-flex items-center rounded-xl border border-blue-200/80 bg-white/75 px-6 py-3 text-sm font-medium text-blue-800 shadow-[0_14px_34px_rgba(15,23,42,0.08)] transition-colors hover:border-blue-300 hover:bg-white"
+                  >
+                    Log in
                   </Link>
                   <Link
                     href="/#how-it-works"

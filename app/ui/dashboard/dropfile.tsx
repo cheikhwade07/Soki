@@ -1,9 +1,9 @@
 "use client";
 
-import { ChangeEvent, DragEvent, useRef, useState } from "react";
+import { ChangeEvent, DragEvent, useEffect, useRef, useState } from "react";
 
 import { useRouter } from "next/navigation";
-import { FileText, LoaderCircle, Upload, WandSparkles } from "lucide-react";
+import {Loader, FileText, Upload, WandSparkles } from "lucide-react";
 
 type DropFilesProps = {
     deckId?: string;
@@ -15,7 +15,41 @@ export function DropFiles({ deckId }: DropFilesProps) {
     const [file, setFile] = useState<File | null>(null);
     const [uploading, setUploading] = useState(false);
     const [message, setMessage] = useState<string | null>(null);
+    const [uploadsRemainingToday, setUploadsRemainingToday] = useState<number>(5);
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        let cancelled = false;
+
+        const loadUploadStatus = async () => {
+            try {
+                const response = await fetch('/api/generate-cards', {
+                    method: 'GET',
+                    cache: 'no-store',
+                });
+
+                const payload = await readJsonSafely(response);
+
+                if (!response.ok || cancelled) {
+                    return;
+                }
+
+                const remaining = Number(payload?.uploadsRemainingToday);
+
+                if (Number.isFinite(remaining)) {
+                    setUploadsRemainingToday(remaining);
+                }
+            } catch {
+                // Ignore status fetch failures and keep the default UI fallback.
+            }
+        };
+
+        loadUploadStatus();
+
+        return () => {
+            cancelled = true;
+        };
+    }, []);
 
     const handleDragEnter = (event: DragEvent<HTMLDivElement>) => {
         event.preventDefault();
@@ -45,7 +79,7 @@ export function DropFiles({ deckId }: DropFilesProps) {
         if (incomingFiles.length > 1 || pdfFiles.length > 1) {
             setMessage("Only one PDF can be uploaded at a time while the generation system is in beta.");
         } else {
-            setMessage("Beta note: uploads are currently limited to 5 per day while the generation system is still in beta.");
+            setMessage(`Beta note: ${uploadsRemainingToday} upload${uploadsRemainingToday !== 1 ? 's' : ''} remaining today for your account while the generation system is still in beta.`);
         }
 
         setFile(pdfFiles[0]);
@@ -117,9 +151,13 @@ export function DropFiles({ deckId }: DropFilesProps) {
             }
 
             const totalGenerated = Number(payload?.count ?? 0);
+            const nextRemaining = Number(payload?.uploadsRemainingToday ?? uploadsRemainingToday);
 
             setFile(null);
-            setMessage(`Generated and saved ${totalGenerated} card${totalGenerated !== 1 ? 's' : ''}. Beta note: uploads are limited to 5 per day.`);
+            setUploadsRemainingToday(nextRemaining);
+            setMessage(
+                `Generated and saved ${totalGenerated} card${totalGenerated !== 1 ? 's' : ''}. ${nextRemaining} upload${nextRemaining !== 1 ? 's' : ''} remaining today for your account while the generation system is still in beta.`,
+            );
             router.refresh();
         } catch (error) {
             setMessage(error instanceof Error ? error.message : 'Failed to generate cards.');
@@ -181,7 +219,7 @@ export function DropFiles({ deckId }: DropFilesProps) {
 
             {!message && (
                 <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
-                    Beta note: uploads are currently limited to 5 per day while the generation system is still in beta.
+                    Beta note: {uploadsRemainingToday} upload{uploadsRemainingToday !== 1 ? 's' : ''} remaining today for your account while the generation system is still in beta.
                 </div>
             )}
 
@@ -199,7 +237,10 @@ export function DropFiles({ deckId }: DropFilesProps) {
                                 </div>
                             </div>
                             <button
-                                onClick={removeFile}
+                                onClick={(event) => {
+                                    event.stopPropagation();
+                                    removeFile();
+                                }}
                                 className="ml-4 rounded-lg px-3 py-2 text-sm font-medium text-red-500 hover:bg-red-50"
                             >
                                 Remove
@@ -211,15 +252,22 @@ export function DropFiles({ deckId }: DropFilesProps) {
                         <div>
                             <p className="text-sm font-medium">Ready to generate cards</p>
                             <p className="mt-1 text-xs text-slate-300">
-                                1 PDF selected for this deck.
+                                1 PDF selected for this deck. {uploadsRemainingToday} upload{uploadsRemainingToday !== 1 ? 's' : ''} remaining today for your account.
                             </p>
                         </div>
                         <button
-                            onClick={handleUpload}
+                            onClick={(event) => {
+                                event.stopPropagation();
+                                void handleUpload();
+                            }}
                             disabled={uploading}
                             className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-medium text-slate-900 hover:bg-slate-100 disabled:opacity-50"
                         >
-                            {uploading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+                            {uploading ? (
+                                <Loader  />
+                            ) : (
+                                <Upload  />
+                            )}
                             {uploading ? 'Generating...' : 'Generate Cards'}
                         </button>
                     </div>
