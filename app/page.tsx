@@ -132,6 +132,12 @@ export default function Page() {
               >
                 <p className="font-medium text-slate-900">Get started</p>
               </Link>
+              <Link
+                href="/login"
+                className="block rounded-md px-3 py-2 transition-colors hover:bg-slate-50"
+              >
+                <p className="font-medium text-slate-900">Log in</p>
+              </Link>
             </div>
           </div>
         </details>
@@ -348,6 +354,12 @@ export default function Page() {
                     <span>Start Training</span> <ArrowRightIcon className="w-4" />
                   </Link>
                   <Link
+                    href="/login"
+                    className="inline-flex items-center rounded-xl border border-blue-200/80 bg-white/75 px-6 py-3 text-sm font-medium text-blue-800 shadow-[0_14px_34px_rgba(15,23,42,0.08)] transition-colors hover:border-blue-300 hover:bg-white"
+                  >
+                    Log in
+                  </Link>
+                  <Link
                     href="/#how-it-works"
                     className="inline-flex items-center rounded-xl border border-blue-200/80 bg-white/75 px-6 py-3 text-sm font-medium text-blue-800 shadow-[0_14px_34px_rgba(15,23,42,0.08)] transition-colors hover:border-blue-300 hover:bg-white"
                   >
@@ -519,14 +531,14 @@ export default function Page() {
                       ))}
                     </div>
                   </div>
-                  <div className="rounded-[1.75rem] border border-blue-100/80 bg-blue-600 p-5 text-white shadow-[0_22px_46px_rgba(37,99,235,0.22)]">
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-100">
+                  <div className="rounded-[1.75rem] border border-blue-100/80 bg-[linear-gradient(145deg,rgba(226,236,249,0.96)_0%,rgba(210,225,245,0.94)_55%,rgba(238,244,252,0.98)_100%)] p-5 text-slate-900 shadow-[0_18px_38px_rgba(15,23,42,0.08)]">
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-700">
                       Study smarter
                     </p>
-                    <p className={`${notoSerifJp.className} mt-3 text-3xl font-semibold`}>
+                    <p className={`${notoSerifJp.className} mt-3 text-3xl font-semibold text-blue-950`}>
                       Stop forgetting what you learn.
                     </p>
-                    <p className="mt-3 text-sm leading-7 text-blue-50">
+                    <p className="mt-3 text-sm leading-7 text-slate-700">
                       Spaced repetition reinforces material right before it fades, turning quick review into long-term memory.
                     </p>
                   </div>
@@ -602,35 +614,35 @@ export default function Page() {
                 <path
                   d="M90 118 C 150 162, 208 196, 280 222 C 348 248, 432 274, 520 295 C 620 318, 734 334, 860 340"
                   fill="none"
-                  stroke="#5f88d8"
+                  stroke="#5f6fb6"
                   strokeWidth="5"
                   strokeLinecap="round"
                 />
                 <path
                   d="M90 118 C 124 88, 154 72, 182 76 C 210 84, 238 122, 270 174 C 304 226, 352 268, 408 296 C 470 320, 534 334, 598 338"
                   fill="none"
-                  stroke="#e9a166"
+                  stroke="#7565a6"
                   strokeWidth="5"
                   strokeLinecap="round"
                 />
                 <path
                   d="M246 118 C 282 80, 314 62, 346 70 C 380 84, 412 124, 446 176 C 482 232, 536 272, 602 294 C 670 314, 744 326, 860 330"
                   fill="none"
-                  stroke="#e47b95"
+                  stroke="#5d4c8a"
                   strokeWidth="5"
                   strokeLinecap="round"
                 />
                 <path
                   d="M412 118 C 448 82, 484 66, 520 76 C 556 94, 592 136, 628 188 C 662 236, 708 270, 762 288 C 804 300, 836 304, 860 306"
                   fill="none"
-                  stroke="#8b96ad"
+                  stroke="#7b839d"
                   strokeWidth="5"
                   strokeLinecap="round"
                 />
                 <path
                   d="M584 118 C 620 82, 654 66, 690 76 C 726 92, 760 128, 794 172 C 822 208, 846 230, 860 244"
                   fill="none"
-                  stroke="#9bc962"
+                  stroke="#334f7d"
                   strokeWidth="5"
                   strokeLinecap="round"
                 />
@@ -646,12 +658,12 @@ export default function Page() {
                 <text x="486" y="384" fill="#64748b" fontSize="18">3</text>
                 <text x="626" y="384" fill="#64748b" fontSize="18">4</text>
 
-                <rect x="676" y="220" width="170" height="132" rx="18" fill="rgba(255,255,255,0.78)" />
-                <text x="700" y="256" fill="#9bc962" fontSize="18">4th repetition</text>
-                <text x="700" y="282" fill="#8b96ad" fontSize="18">3rd repetition</text>
-                <text x="700" y="308" fill="#e47b95" fontSize="18">2nd repetition</text>
-                <text x="700" y="334" fill="#e9a166" fontSize="18">1st repetition</text>
-                <text x="700" y="360" fill="#5f88d8" fontSize="18">Forgetting curve</text>
+                <rect x="676" y="220" width="170" height="132" rx="18" fill="rgba(235,239,248,0.88)" />
+                <text x="700" y="256" fill="#334f7d" fontSize="18">4th repetition</text>
+                <text x="700" y="282" fill="#7b839d" fontSize="18">3rd repetition</text>
+                <text x="700" y="308" fill="#5d4c8a" fontSize="18">2nd repetition</text>
+                <text x="700" y="334" fill="#7565a6" fontSize="18">1st repetition</text>
+                <text x="700" y="360" fill="#5f6fb6" fontSize="18">Forgetting curve</text>
                 </g>
               </svg>
             </div>

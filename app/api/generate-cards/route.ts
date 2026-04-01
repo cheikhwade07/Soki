@@ -3,6 +3,19 @@ import { revalidatePath } from 'next/cache';
 import postgres from 'postgres';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require', prepare: false });
+const DAILY_UPLOAD_LIMIT = 5;
+
+async function ensureGenerationUploadsTable() {
+  await sql`
+    CREATE TABLE IF NOT EXISTS generation_uploads (
+      generation_upload_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      user_id UUID NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+      deck_id UUID NOT NULL REFERENCES decks(deck_id) ON DELETE CASCADE,
+      file_name TEXT NOT NULL,
+      created_at TIMESTAMP NOT NULL DEFAULT NOW()
+    )
+  `;
+}
 
 function mapFsrsState(state: string | null | undefined) {
   switch ((state ?? '').toLowerCase()) {
@@ -67,6 +80,41 @@ function extractBackendError(payload: any) {
   return 'Failed to generate cards.';
 }
 
+export async function GET() {
+  try {
+    const session = await auth();
+    const userId = session?.user?.id;
+
+    if (!userId) {
+      return Response.json({ error: 'Unauthorized.' }, { status: 401 });
+    }
+
+    await ensureGenerationUploadsTable();
+
+    const uploadCountResult = await sql<{ count: string }[]>`
+      SELECT COUNT(*)::text AS count
+      FROM generation_uploads
+      WHERE user_id = ${userId}
+        AND created_at >= date_trunc('day', NOW())
+    `;
+
+    const uploadsToday = Number(uploadCountResult[0]?.count ?? '0');
+
+    return Response.json({
+      dailyUploadLimit: DAILY_UPLOAD_LIMIT,
+      uploadsToday,
+      uploadsRemainingToday: Math.max(0, DAILY_UPLOAD_LIMIT - uploadsToday),
+    });
+  } catch (error) {
+    return Response.json(
+      {
+        error: error instanceof Error ? error.message : 'Unexpected server error.',
+      },
+      { status: 500 },
+    );
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const session = await auth();
@@ -99,6 +147,8 @@ export async function POST(request: Request) {
       return Response.json({ error: 'Missing file.' }, { status: 400 });
     }
 
+    await ensureGenerationUploadsTable();
+
     const deckResult = await sql<{ deck_id: string; deck_kind: 'container' | 'cards' | null }[]>`
       SELECT deck_id, deck_kind
       FROM decks
@@ -112,6 +162,25 @@ export async function POST(request: Request) {
 
     if (deckResult[0].deck_kind === 'container') {
       return Response.json({ error: 'This deck stores decks and cannot accept cards.' }, { status: 400 });
+    }
+
+    const uploadCountResult = await sql<{ count: string }[]>`
+      SELECT COUNT(*)::text AS count
+      FROM generation_uploads
+      WHERE user_id = ${userId}
+        AND created_at >= date_trunc('day', NOW())
+    `;
+
+    const uploadsToday = Number(uploadCountResult[0]?.count ?? '0');
+
+    if (uploadsToday >= DAILY_UPLOAD_LIMIT) {
+      return Response.json(
+        {
+          error:
+            'Daily upload limit reached. Uploads are currently limited to 5 per day while the generation system is still in beta.',
+        },
+        { status: 429 },
+      );
     }
 
     const backendForm = new FormData();
@@ -206,6 +275,11 @@ export async function POST(request: Request) {
           )
         `;
       }
+
+      await transaction`
+        INSERT INTO generation_uploads (user_id, deck_id, file_name)
+        VALUES (${userId}, ${deckId}, ${file.name})
+      `;
     });
 
     revalidatePath('/dashboard');
@@ -217,6 +291,7 @@ export async function POST(request: Request) {
     return Response.json({
       message: 'Cards generated and saved.',
       count: cards.length,
+      uploadsRemainingToday: DAILY_UPLOAD_LIMIT - uploadsToday - 1,
     });
   } catch (error) {
     return Response.json(
